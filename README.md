@@ -189,10 +189,11 @@ this repo; get them from TU/e.
 - Color `Tue-red` = **TU/e Scarlet** RGB 200-25-25 (#C81919), used for the logo, headers and
   color areas. Plain text is black. An optional secondary color (`\accentcolor`, see
   [Accent color](#accent-color)) replaces it in headings, bullets and boxes.
-- Logo: the official `TUe-logo-scarlet-rgb.pdf` (from the TU/e beamer template), including its
-  bounding box (the protected space; nothing may go inside it). Never recolored, never on photos.
-- Logos in `common/figures/tue/`: the official files from the TU/e beamer and poster
-  packages (line and stack versions, scarlet and white), placed at measured sizes.
+- Logos in `common/figures/tue/`: the official files from the TU/e logo kit (*TUe LOGO SET
+  complete*): basic, descriptor-line and descriptor-stack, RGB scarlet for screen and white,
+  used with their bounding box (the protected space; nothing may go inside it) at measured
+  sizes. Never recolored, never on photos. `tue-banner.pdf` is the campus photo from the TU/e
+  beamer template.
 - Poster title block: centered in the title bar (tueposter2018 hangs it 2 mm below
   the bar top). Departures from the guide, by choice: the font stays mlmodern (the guide says Noto Sans
   for LaTeX, the report covers Avenir Next), and the slides keep this layout instead of
@@ -228,7 +229,8 @@ The images in `docs/img/` come from the template PDFs. After changing a style, r
 
 The code (`.sty`, `.tex`, scripts, settings) is under the [MIT License](LICENSE).
 
-The TU/e logos in `common/figures/tue/` are trademarks of Eindhoven University of Technology and
-are **not** covered by that license. They are the official files from the TU/e logo kit;
+The TU/e logos and the campus banner in `common/figures/tue/` belong to Eindhoven University
+of Technology (the logos are its trademarks) and are **not** covered by that license. The logos
+are the official files from the TU/e logo kit, the banner comes from the TU/e beamer template;
 use them only as the TU/e visual identity allows, for TU/e work. This is a student
 project, not an official TU/e template.
