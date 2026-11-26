@@ -120,6 +120,22 @@ instead of shrinking the font (shorten it, split it, or `\cardfontsize{12}{15}`)
 
 Text is mlmodern (a darker Latin Modern) with sans-serif headings; plain text stays black.
 
+### Font
+
+<p align="center"><img src="docs/img/fonts.png" alt="The same report page and slide in mlmodern, Computer Modern and Noto Sans" width="900"></p>
+
+The default is mlmodern (a darker Latin Modern: serif text, sans headings). Two options, set on
+the style package (or with copier's *font* question):
+
+```latex
+\usepackage[font=noto]{tuereport}   % Noto Sans: the TU/e font for LaTeX (visual identity)
+\usepackage[font=cm]{tuethesis}     % Computer Modern: the plain LaTeX look
+\usetheme[font=noto]{TUe}           % slides
+```
+
+`font=noto` sets text, headings and math (`notomath`) in Noto Sans, as the TU/e visual
+identity prescribes for LaTeX; it needs the `noto` and `notomath` TeX packages.
+
 ### Accent color
 
 <p align="center"><img src="docs/img/accent.png" alt="The same page in Scarlet, blue and green accents" width="820"></p>
@@ -195,8 +211,8 @@ this repo; get them from TU/e.
   sizes. Never recolored, never on photos. `tue-banner.pdf` is the campus photo from the TU/e
   beamer template.
 - Poster title block: centered in the title bar (tueposter2018 hangs it 2 mm below
-  the bar top). Departures from the guide, by choice: the font stays mlmodern (the guide says Noto Sans
-  for LaTeX, the report covers Avenir Next), and the slides keep this layout instead of
+  the bar top). Departures from the guide, by choice: the default font is mlmodern (the guide says Noto Sans
+  for LaTeX, available as `font=noto`; the report covers use Avenir Next), and the slides keep this layout instead of
   the official TU/e beamer layout (dark blue text on gray).
 
 ## Editors

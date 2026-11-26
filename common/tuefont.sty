@@ -1,0 +1,41 @@
+% tuefont.sty -- the font, shared by tuebase.sty and the beamer theme.
+%   font=modern (default): mlmodern, a darker Latin Modern; sans headings.
+%   font=cm: Computer Modern (Latin Modern, its T1 version), the LaTeX default
+%     look; lighter than mlmodern.
+%   font=noto: Noto Sans for text and headings, with Noto Sans math (notomath),
+%     as the TU/e visual identity prescribes for LaTeX ("Noto Sans Regular, Noto
+%     Sans Bold and its italics").
+% Chosen in the document with the style's option, e.g.
+%   \usepackage[font=noto]{tuereport}      \usetheme[font=noto]{TUe}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tuefont}[2026/11/26 v1.0 TU/e fonts]
+\def\tuef@font{modern}
+\DeclareKeys[tuefont]{font.store = \tuef@font}
+\ProcessKeyOptions[tuefont]
+\def\tuef@modern{modern}
+\def\tuef@noto{noto}
+\def\tuef@cm{cm}
+
+\RequirePackage[T1]{fontenc}            % Hyphenation, accents, copy-paste
+% Math packages load here: newtxmath (notomath) must come after amsmath and
+% amsthm, and replaces amssymb.
+\RequirePackage{amsmath}
+\@ifclassloaded{beamer}{}{\RequirePackage{amsthm}}
+\newif\iftuef@noto
+\ifx\tuef@font\tuef@noto \tuef@nototrue
+\else\ifx\tuef@font\tuef@modern\else\ifx\tuef@font\tuef@cm\else
+  \PackageError{tuefont}{Unknown font=\tuef@font}{Use font=modern, cm or
+  noto. Going on with modern.}%
+\fi\fi\fi
+\iftuef@noto
+  \RequirePackage[sfdefault]{notomath}  % Noto Sans text and math
+\else
+  \RequirePackage{amssymb}
+  \ifx\tuef@font\tuef@cm
+    \RequirePackage{lmodern}            % Computer Modern (Latin Modern)
+  \else
+    \RequirePackage{mlmodern}           % a darker Latin Modern
+  \fi
+\fi
+
+\endinput

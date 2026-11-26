@@ -124,22 +124,60 @@ def main():
 
     # Accent colors: the same CBL page in Scarlet and two secondary colors
     pages = [height(page(cbl, 4), P)]
-    with tempfile.TemporaryDirectory() as t:
-        for hexcolor in ('003399', '00AC82'):   # CH&T-Blue, ESoE-Green (manual, institute colors)
-            src = (ROOT / 'cbl-report' / 'main.tex').read_text()
-            src = src.replace('% \\accentcolor{HTML}{003399}',
-                              f'\\accentcolor{{HTML}}{{{hexcolor}}}', 1)
-            (Path(t) / 'main.tex').write_text(src)
-            for f in (ROOT / 'cbl-report').iterdir():   # inputs only, never build files
-                if ((f.suffix in ('.sty', '.bib') or f.name in ('figures', 'latexmkrc'))
-                        and not (Path(t) / f.name).exists()):
-                    (Path(t) / f.name).symlink_to(f.resolve())
-            subprocess.run(['latexmk', '-pdf', '-quiet', 'main.tex'], cwd=t, check=True,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            pages.append(height(page(Path(t) / 'main.pdf', 4), P))
-            subprocess.run(['latexmk', '-C', 'main.tex'], cwd=t,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for hexcolor in ('003399', '00AC82'):   # CH&T-Blue, ESoE-Green (manual, institute colors)
+        pdf = variant('cbl-report', 'main', lambda s: s.replace(
+            '% \\accentcolor{HTML}{003399}', f'\\accentcolor{{HTML}}{{{hexcolor}}}', 1))
+        pages.append(height(page(pdf, 4), P))
     sheet([pages], 'accent')
+
+    # Fonts: mlmodern (default), Computer Modern, Noto Sans; report text and a slide
+    cols = []
+    for font, name in (('modern', 'mlmodern (default)'), ('cm', 'Computer Modern'),
+                       ('noto', 'Noto Sans (TU/e LaTeX font)')):
+        opt = '' if font == 'modern' else f'[font={font}]'
+        rep = variant('cbl-report', 'main', lambda s: s.replace(
+            '\\usepackage{tuereport}', f'\\usepackage{opt}{{tuereport}}', 1))
+        sli = variant('beamer', 'slides', lambda s: s.replace(
+            '\\usetheme{TUe}', f'\\usetheme{opt}{{TUe}}', 1))
+        text = page(rep, 4, 200)
+        text = text.crop((round(text.width * 0.09), round(text.height * 0.07),
+                          round(text.width * 0.91), round(text.height * 0.47)))
+        text = width(text, 620)
+        slide = width(page(sli, 4, 200), 620)
+        cols.append(labelled([text, slide], name))
+    sheet([cols], 'fonts')
+
+
+def variant(folder, doc, edit):
+    """Build folder/doc.tex with edit() applied to its source, in a temporary copy
+    (inputs linked, never the build files). Returns the PDF path."""
+    t = Path(tempfile.mkdtemp())
+    src = (ROOT / folder / f'{doc}.tex').read_text()
+    (t / f'{doc}.tex').write_text(edit(src))
+    for f in (ROOT / folder).iterdir():
+        if f.suffix in ('.sty', '.bib') or f.name in ('figures', 'latexmkrc'):
+            (t / f.name).symlink_to(f.resolve())
+    subprocess.run(['latexmk', '-pdf', '-quiet', f'{doc}.tex'], cwd=t, check=True,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return t / f'{doc}.pdf'
+
+
+def labelled(images, label):
+    """Stack images on one white card with a label on top."""
+    from PIL import ImageDraw, ImageFont
+    try:
+        font = ImageFont.truetype('/usr/share/fonts/google-noto/NotoSans-Bold.ttf', 26)
+    except OSError:
+        font = ImageFont.load_default()
+    w = max(i.width for i in images)
+    h = 60 + sum(i.height for i in images) + 20 * (len(images) - 1)
+    card = Image.new('RGB', (w, h), 'white')
+    ImageDraw.Draw(card).text((20, 16), label, fill=(200, 25, 25), font=font)
+    y = 60
+    for i in images:
+        card.paste(i, (0, y))
+        y += i.height + 20
+    return card
 
 
 if __name__ == '__main__':

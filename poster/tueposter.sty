@@ -13,6 +13,10 @@
 % Shared fonts, packages, colors and document data: tuebase.sty.
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{tueposter}[2026/11/25 v1.0 TU/e poster]
+% Option font=modern (mlmodern, default), cm (Computer Modern) or noto (Noto
+% Sans): tuefont.sty
+\DeclareKeys[tueposter]{font.code = \PassOptionsToPackage{font=#1}{tuefont}}
+\ProcessKeyOptions[tueposter]
 \RequirePackage{tuebase}
 \RequirePackage{multicol}
 % PDF subject: the subtitle, else "Scientific poster"

@@ -105,6 +105,14 @@ department:
   help: Department
   default: Department of Electrical Engineering
   when: "{{ kind in ['thesis', 'poster'] }}"
+font:
+  type: str
+  help: Font
+  choices:
+    "mlmodern (serif text, sans headings)": modern
+    "Computer Modern (the LaTeX default look)": cm
+    "Noto Sans (the TU/e font for LaTeX)": noto
+  default: modern
 accent:
   type: str
   help: >-

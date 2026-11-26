@@ -90,4 +90,11 @@ if accent:  # uncomment the \accentcolor line and set the color
                    lambda m: m.group(1) + '{HTML}{' + accent + '}', t, count=1, flags=re.M)
     if n != 1:
         sys.exit('fill.py: no \\accentcolor line found')
+font = get('font', 'modern')
+if font != 'modern':  # \usepackage[font=noto]{tue...} / \usetheme[font=noto]{TUe}
+    t, n = re.subn(r'^(\\use(?:package|theme))\{(tue\w+|TUe)\}',
+                   lambda m: m.group(1) + f'[font={font}]{{' + m.group(2) + '}', t, count=1,
+                   flags=re.M)
+    if n != 1:
+        sys.exit('fill.py: no \\usepackage{tue...} line found')
 open(f, 'w').write(t)

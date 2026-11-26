@@ -10,10 +10,9 @@
 % ------------------------------------------------------------------------------
 % Packages (grouped by purpose)
 % ------------------------------------------------------------------------------
-\RequirePackage[T1]{fontenc}            % Hyphenation, accents, copy-paste
-\RequirePackage{mlmodern}               % Font: a darker Latin Modern
+\RequirePackage{tuefont}                % Font: mlmodern, or Noto Sans (font=noto)
 \RequirePackage[american]{babel}        % US English (spelling too)
-\RequirePackage{amsmath, amssymb, amsthm}
+% amsmath, amssymb, amsthm: loaded by tuefont (order matters for Noto)
 \RequirePackage{geometry}               % Page size: set by each layout
 \RequirePackage{microtype}              % Better spacing, fewer overfull lines
 \RequirePackage{lipsum}                 % Dummy text

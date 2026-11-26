@@ -17,3 +17,4 @@ acronym.sty makeidx.sty paralist.sty
 # Used by the report/beamer templates
 biblatex.sty ieee.bbx csquotes.sty lastpage.sty appendixnumberbeamer.sty mwe.sty etoolbox.sty
 pdfpages.sty listings.sty tcolorbox.sty tikzfill.image.sty soul.sty longtable.sty
+noto.sty notomath.sty

@@ -1,12 +1,16 @@
 % beamerthemeTUe.sty -- slides in the same style as tuereport.sty (TU/e red,
 % mlmodern sans).
-% Use: \usetheme{TUe}. Footer: author | title | slide x / total (listeners need the slide number to ask questions). Backup slides after
+% Use: \usetheme{TUe}, or \usetheme[font=noto]{TUe} for Noto Sans. Footer: author | title | slide x / total (listeners need the slide number to ask questions). Backup slides after
 % \appendix do not count in the total.
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{beamerthemeTUe}[2026/11/25 v1.0 TU/e beamer theme]
 
-\RequirePackage[T1]{fontenc}
-\RequirePackage{mlmodern}
+% Option font=modern (mlmodern, default), cm (Computer Modern) or noto (Noto
+% Sans): tuefont.sty
+\DeclareKeys[beamerthemeTUe]{font.code = \PassOptionsToPackage{font=#1}{tuefont}}
+\ProcessKeyOptions[beamerthemeTUe]
+\RequirePackage{tuefont}
+\iftuef@noto\usefonttheme{professionalfonts}\fi   % keep the Noto Sans math
 \RequirePackage{tikz}
 \RequirePackage{appendixnumberbeamer}
 \RequirePackage{siunitx}

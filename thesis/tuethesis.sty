@@ -4,9 +4,14 @@
 % Intern), redrawn in TikZ with the sizes measured from the TU/e PDF. Inner title
 % page and chapter structure: the TU/e master/bachelor thesis template.
 % Shared fonts, packages, colors, boxes and document data: tuebase.sty.
-% Deviation from the TU/e cover, by choice: mlmodern sans instead of Avenir Next.
+% Deviation from the TU/e cover, by choice: mlmodern sans (or Noto Sans with
+% font=noto) instead of Avenir Next.
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{tuethesis}[2026/11/25 v1.0 TU/e thesis style]
+% Option font=modern (mlmodern, default), cm (Computer Modern) or noto (Noto
+% Sans): tuefont.sty
+\DeclareKeys[tuethesis]{font.code = \PassOptionsToPackage{font=#1}{tuefont}}
+\ProcessKeyOptions[tuethesis]
 \RequirePackage{tuebase}
 \@ifundefined{chapter}{\PackageError{tuethesis}{Use the report class}{}}{}
 \geometry{margin=2.5cm, headheight=17pt}

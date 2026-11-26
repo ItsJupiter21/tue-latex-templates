@@ -6,6 +6,7 @@
 % Orientation: print double-sided, "flip on long edge", A4, actual size (100 %).
 % The text of each card is then printed behind its logo side, both upright:
 % holding the card to read the text, the audience sees the logo the right way up.
+% Font: \usepackage[font=noto]{tuecards} for Noto Sans (default mlmodern).
 % For printers that only flip on the short edge: \usepackage[flip=short]{tuecards}
 % (the text sides are then swapped and turned 180 degrees to land in place).
 % Cut the sheets in half at the marks (148.5 mm).
@@ -13,7 +14,8 @@
 \ProvidesPackage{tuecards}[2026/11/25 v1.0 TU/e cue cards]
 \newif\iftuec@shortflip
 \def\tuec@flip{long}
-\DeclareKeys[tuecards]{flip.store = \tuec@flip}
+\DeclareKeys[tuecards]{flip.store = \tuec@flip,
+  font.code = \PassOptionsToPackage{font=#1}{tuefont}}   % see tuefont.sty
 \ProcessKeyOptions[tuecards]
 \def\tuec@short{short}
 \ifx\tuec@flip\tuec@short\tuec@shortfliptrue\fi
