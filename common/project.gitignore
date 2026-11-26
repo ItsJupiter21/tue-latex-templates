@@ -1,0 +1,24 @@
+# Build output (only source files in git)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.synctex.gz
+*.dvi
+*.xdv
+*-SAVE-ERROR
+*.pdf
+# ...except figures and released versions
+!figures/**/*.pdf
+!snapshots/*.pdf

@@ -1,0 +1,101 @@
+% tuereport.sty -- CBL (group) report and short note in the house style.
+% Shared fonts, packages, colors, boxes and document data: tuebase.sty.
+% Load it with \usepackage{tuereport} from an article-class document (see
+% main.tex, note.tex).
+% Every setting is here or in tuebase.sty; the .tex files hold only text.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tuereport}[2026/11/25 v1.1 TU/e CBL report style]
+\RequirePackage{tuebase}
+\geometry{margin=2.5cm, headheight=17pt}
+
+% ------------------------------------------------------------------------------
+% Numbering
+% ------------------------------------------------------------------------------
+% Figure 3.1 = first figure of Section 3
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\setcounter{tocdepth}{2}                 % ToC: sections and subsections
+\g@addto@macro\appendix{%
+\crefalias{section}{appendix}\crefalias{subsection}{appendix}}
+
+% ------------------------------------------------------------------------------
+% Header and footer: logo | title, version | page x of y
+% ------------------------------------------------------------------------------
+\fancypagestyle{tuereport}{%
+  \fancyhf{}%
+  \fancyhead[L]{%
+  \includegraphics[height=12pt]{figures/tue/tue-logo-scarlet.pdf}}%
+  \fancyhead[R]{\small\@reportheader}%
+  \fancyfoot[L]{\small\color{gray}\@reportversion}%
+  \fancyfoot[C]{\thepage}%
+  \fancyfoot[R]{\small\color{gray}\@reportfooter}%
+  \renewcommand\headrulewidth{0.4pt}%
+\renewcommand\footrulewidth{0.4pt}}
+% pages with a \section title look the same
+\fancypagestyle{plain}{\pagestyle{tuereport}}
+\pagestyle{tuereport}
+
+% Front matter (ToC, lists, abstract) in roman numerals, the body from 1
+\newcommand\frontmatter{\clearpage\pagenumbering{roman}}
+\newcommand\mainmatter{\clearpage\pagenumbering{arabic}}
+
+% ------------------------------------------------------------------------------
+% Cover page (full report): \makecover
+% ------------------------------------------------------------------------------
+\newcommand\makecover{%
+  \begin{titlepage}
+    \centering
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[anchor=south, inner sep=0pt] at (current page.south)
+      {\includegraphics[width=\paperwidth]{figures/tue/tue-banner.pdf}};
+      \node[anchor=south west, text=white, font=\sffamily\Large]
+      at ([xshift=2.5cm, yshift=1.5cm]current page.south west)
+      {\tuer@placedate};
+    \end{tikzpicture}%
+    \begin{tikzpicture}
+      \node[inner sep=0pt] (logo) at (0,0)
+      {\includegraphics[width=.3\textwidth]{figures/tue/tue-logo-scarlet.pdf}};
+      \node[text width=0.45\textwidth, right=of logo, text block] (title)
+      {\sffamily\huge\@reporttitle};
+      \node[text width=0.45\textwidth, below=0.3cm of title.south,
+      anchor=north, text block] (subtitle)
+      {\sffamily\Large\@reportsubtitle\par\vspace{2pt}%
+      \normalsize\color{gray}\@reportversion};
+      \coordinate (bar) at ($(logo.east)!0.5!(title.west)$);
+      \draw[line width=1mm, Tue-red]
+      (bar |- title.north) -- (bar |- subtitle.south);
+    \end{tikzpicture}
+
+    \vspace{2cm}
+    \sffamily
+    \ifx\@reportgroup\@empty\else
+    {\large\bfseries\@reportgroup\par}\vspace{0.5cm}
+    \fi
+    \ifx\@reportauthors\@empty\else
+    {\large
+      \begin{tabular}{ll}
+        \textbf{Name} & \textbf{Student ID}\\ \midrule
+        \@reportauthors
+    \end{tabular}\par}
+    \vspace{0.5cm}
+    \fi
+    \ifx\@reportsupervisor\@empty\else{\@reportsupervisor\par}\fi
+    \ifx\@reportcoverimage\@empty\else
+    \vspace{0.5cm}
+    \includegraphics[width=0.45\linewidth, height=5cm, keepaspectratio]
+    {\@reportcoverimage}\par
+    \fi
+\end{titlepage}}
+
+% ------------------------------------------------------------------------------
+% Title block (short note / SSA): \makenotetitle
+% ------------------------------------------------------------------------------
+\newcommand\makenotetitle{%
+  {\sffamily
+    {\color{Tue-red}\huge\@reporttitle\par}\vspace{6pt}
+    \ifx\@reportsubtitle\@empty\else{\Large\@reportsubtitle\par}\vspace{4pt}\fi
+  {\color{gray}\tuer@placedate\quad\textbar\quad\@reportversion\par}}
+\vspace{\baselineskip}}
+
+\endinput

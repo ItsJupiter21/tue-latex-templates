@@ -1,0 +1,97 @@
+% !TeX program = latexmk
+% Presentation in the report's style. Build: make (or latexmk -pdf slides.tex).
+% Writing rules and conventions: WRITING.md in the LaTeX templates.
+\documentclass[aspectratio=169, 11pt]{beamer}
+\usetheme{TUe}
+\usepackage[american]{babel}
+\usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage[style=ieee, backend=biber]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\footnotesize}
+
+\title{Title of the presentation}
+\subtitle{COURSE CODE -- Course name}
+\author[Name Surname]{Name Surname}         % [short] goes in the footer
+\institute{Eindhoven University of Technology}
+\date{\today}
+% \accentcolor{HTML}{003399}              % secondary color for headings etc.; default Scarlet
+
+\begin{document}
+
+\begin{frame}[plain, noframenumbering]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Problem}{One message per slide}
+  \begin{itemize}
+    \item State the problem.
+    \item State what is new.
+      \begin{itemize}
+        \item Sub-point
+      \end{itemize}
+    \item State the main result: \SI{9.3}{\metre}.
+  \end{itemize}
+  \begin{block}{Claim}
+    The design reaches \SI{10}{\metre} with \SI{20}{\gram}~\cite{knuth1986}.
+  \end{block}
+\end{frame}
+
+\section{Approach}
+
+\begin{frame}{Design}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{enumerate}
+        \item Load the spring.
+        \item Release the trigger.
+        \item The plane leaves the rail.
+      \end{enumerate}
+      \vspace{0.3cm}
+      Explain what the figure shows and why it matters.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{figure}
+        \includegraphics[width=\linewidth]{example-image}
+        \caption{Overview of the design.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Results}
+
+\begin{frame}{Results}
+  \begin{table}
+    \caption{Launch distances.}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Run} & \textbf{Angle (\si{\degree})}
+      & \textbf{Distance (\si{\metre})} \\
+      \midrule
+      A & 30 & 7.1 \\
+      B & 45 & 9.3 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \begin{alertblock}{Conclusion}
+    Run B proves the claim.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{References}
+  \printbibliography
+\end{frame}
+
+\appendix
+\begin{frame}{Backup: calculations}
+  Backup slides are numbered but do not count in the total.
+\end{frame}
+
+\end{document}

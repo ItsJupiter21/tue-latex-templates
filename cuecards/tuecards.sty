@@ -1,0 +1,129 @@
+% tuecards.sty -- speaker cue cards: A5 cards, two per A4 sheet (TU/e "Speaker
+% cue cards - 2 on 1 A4 print"). Side 1 of each card is the branded side the
+% audience sees (the TU/e stack logo, centered, as in the TU/e file; change it
+% with \cardlogo); side 2 is the speaker's text for that card.
+%
+% Orientation: print double-sided, "flip on long edge", A4, actual size (100 %).
+% The text of each card is then printed behind its logo side, both upright:
+% holding the card to read the text, the audience sees the logo the right way up.
+% For printers that only flip on the short edge: \usepackage[flip=short]{tuecards}
+% (the text sides are then swapped and turned 180 degrees to land in place).
+% Cut the sheets in half at the marks (148.5 mm).
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tuecards}[2026/11/25 v1.0 TU/e cue cards]
+\newif\iftuec@shortflip
+\def\tuec@flip{long}
+\DeclareKeys[tuecards]{flip.store = \tuec@flip}
+\ProcessKeyOptions[tuecards]
+\def\tuec@short{short}
+\ifx\tuec@flip\tuec@short\tuec@shortfliptrue\fi
+\RequirePackage{tuebase}
+\geometry{margin=0pt}
+\pagestyle{empty}
+\def\@reportsubject{Speaker cue cards}   % PDF subject
+
+% ------------------------------------------------------------------------------
+% Settings
+% ------------------------------------------------------------------------------
+% Logo side: TU/e stack logo at twice its native size, centered on the card
+% (measured from the TU/e file); \cardlogo{} for none.
+\def\tuec@logo{figures/tue/tue-logo-descriptor-stack-scarlet.pdf}
+\def\tuec@logowidth{86.44mm}
+\newcommand\cardlogo[2][86.44mm]{\def\tuec@logowidth{#1}\def\tuec@logo{#2}}
+% Text side: font size and leading of the speaker's text
+\def\tuec@size{14}\def\tuec@leading{18}
+\newcommand\cardfontsize[2]{\def\tuec@size{#1}\def\tuec@leading{#2}}
+% Card 210 x 148.5 mm; text kept 12 mm off the edges (cutting and duplex
+% misregistration), number and heading in the top 18 mm
+\def\tuec@margin{12}
+\def\tuec@texttop{20}
+\newlength\tuec@textwidth \setlength\tuec@textwidth{186mm}
+\newlength\tuec@textheight \setlength\tuec@textheight{116.5mm}
+
+% ------------------------------------------------------------------------------
+% Cards: \begin{card}[cue]{heading} text \end{card}; stored, printed two per
+% sheet. The optional cue (keywords, slide number) goes under the logo on side 1.
+% ------------------------------------------------------------------------------
+\newcounter{card}
+\def\tuec@total{??}
+\AtEndDocument{\tuec@flush
+\immediate\write\@auxout{\gdef\string\tuec@total{\the\c@card}}}
+\newsavebox\tuec@box
+\NewDocumentEnvironment{card}{O{} m +b}{%
+  \stepcounter{card}%
+  % set the text now: overflow is an error, not a smaller font
+  \global\setbox\tuec@box=\vbox{\hsize=\tuec@textwidth
+    \sffamily\fontsize{\tuec@size}{\tuec@leading}\selectfont
+  \setlength\parskip{0.5\baselineskip}#3\par}%
+  \ifdim\dimexpr\ht\tuec@box+\dp\tuec@box\relax>\tuec@textheight
+  \PackageError{tuecards}{Card \the\c@card\space (#2) has too much text
+  for the card}{Shorten it, split it over two cards, or set a smaller
+  size with \protect\cardfontsize{12}{15}.}%
+  \fi
+  \expandafter\global\expandafter\setbox
+  \csname tuec@text\ifodd\c@card a\else b\fi\endcsname=\box\tuec@box
+  \expandafter\gdef\csname tuec@head\ifodd\c@card a\else b\fi\endcsname{#2}%
+  \expandafter\gdef\csname tuec@cue\ifodd\c@card a\else b\fi\endcsname{#1}%
+  \expandafter\xdef\csname tuec@num\ifodd\c@card a\else b\fi\endcsname
+  {\the\c@card}%
+  \ifodd\c@card\else\tuec@sheet{2}\fi
+}{}
+\newbox\tuec@texta \newbox\tuec@textb
+\def\tuec@flush{\ifodd\c@card\tuec@sheet{1}\fi}
+
+% One A4 sheet: #1 cards on it (1 or 2). Page 1: logo sides, page 2: text sides.
+\newcommand\tuec@sheet[1]{%
+  \clearpage\null
+  \begin{tikzpicture}[remember picture, overlay, x=1mm, y=-1mm,
+    shift={(current page.north west)}]
+    \tuec@cutmarks
+    \tuec@logoside{74.25}{a}
+    \ifnum#1=2 \tuec@logoside{222.75}{b}\fi
+  \end{tikzpicture}%
+  \clearpage\null
+  \begin{tikzpicture}[remember picture, overlay, x=1mm, y=-1mm,
+    shift={(current page.north west)}]
+    \tuec@cutmarks
+    \iftuec@shortflip
+    % turned sheet: card a's back is the bottom half, upside down
+    \tuec@textside{a}{148.5}{180}%
+    \ifnum#1=2 \tuec@textside{b}{0}{180}\fi
+    \else
+    \tuec@textside{a}{0}{0}%
+    \ifnum#1=2 \tuec@textside{b}{148.5}{0}\fi
+    \fi
+  \end{tikzpicture}%
+\clearpage}
+
+% logo side: logo centered on the card whose center is at y = #1 mm, cue of
+% card #2 (a/b) under it
+\newcommand\tuec@logoside[2]{%
+  \ifx\tuec@logo\@empty\else
+  \node[inner sep=0pt] at (105,#1)
+  {\includegraphics[width=\tuec@logowidth]{\tuec@logo}};
+  \fi
+  \node[inner sep=0pt, text width=180mm, align=center, text=Tue-gray,
+  font=\sffamily\bfseries\Large] at (105,#1+55)
+{\csname tuec@cue#2\endcsname};}
+
+% text side of card #1 (a/b) in the half starting at y = #2 mm, rotated #3
+\newcommand\tuec@textside[3]{%
+  \begin{scope}[shift={(105,#2+74.25)}, rotate=#3, transform shape]
+    \node[anchor=base west, inner sep=0pt, font=\sffamily\bfseries\large,
+    text=Tue-accent] at (\tuec@margin-105,-74.25+13)
+    {\csname tuec@head#1\endcsname};
+    \node[anchor=base east, inner sep=0pt, font=\sffamily\small, text=gray]
+    at (105-\tuec@margin,-74.25+13)
+    {\csname tuec@num#1\endcsname\,/\,\tuec@total};
+    \draw[gray!50, line width=0.3pt] (\tuec@margin-105,-74.25+15.5)
+    -- (105-\tuec@margin,-74.25+15.5);
+    \node[anchor=north west, inner sep=0pt]
+    at (\tuec@margin-105,-74.25+\tuec@texttop)
+    {\usebox{\csname tuec@text#1\endcsname}};
+\end{scope}}
+
+% cut marks at 148.5 mm, in the page margins (outside any card content)
+\newcommand\tuec@cutmarks{%
+\draw[gray, line width=0.3pt] (4,148.5) -- (10,148.5) (200,148.5) -- (206,148.5);}
+
+\endinput

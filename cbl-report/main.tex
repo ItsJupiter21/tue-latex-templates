@@ -1,0 +1,201 @@
+% !TeX program = latexmk
+% Full report: cover, abstract, contents, symbols and abbreviations, body,
+% references, appendix.
+% Build: make (or latexmk -pdf main.tex). Style: tuereport.sty.
+% References: references.bib. Writing rules: WRITING.md in the LaTeX templates.
+\documentclass[a4paper, 11pt]{article}
+\usepackage{tuereport}
+\addbibresource{references.bib}
+
+\reporttitle{Title of the report}
+\reportsubtitle{COURSE CODE -- Course name\\Quartile, academic year}
+\reportversion{v0.1}                      % v0.x drafts, v1.0 first release
+\reportgroup{Group XX}                    % leave empty ({}) to hide
+\reportauthors{%
+  Firstname Lastname & 1234567\\
+  Firstname Lastname & 1234567\\
+}
+\reportsupervisor{Tutor: Name Surname}
+\reportkeywords{}                          % PDF keywords, comma-separated
+% \reportcoverimage{figures/cover.png}    % optional picture on the cover
+% \reportdate{25 November 2026}            % default: \today
+% \accentcolor{HTML}{003399}              % secondary color for headings etc.; default Scarlet
+
+\begin{document}
+
+\makecover
+
+\frontmatter
+% Abstract: the micro version of the report. Trends leading to the problem, the
+% problem, what is new (approach, solution), and the main results. No citations.
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+State the problem in one or two sentences.
+Say what was done to solve it and what is new about the approach.
+Give the main result with numbers, for example a launch distance of \SI{9.3}{\metre}.
+
+\tableofcontents
+\clearpage
+
+\section*{List of symbols}
+\addcontentsline{toc}{section}{List of symbols}
+\label{sec:symbols}
+\begin{table}[H]
+  \rowcolors{2}{gray!10}{white}
+  \centering
+  \begin{tabular}{m{0.14\textwidth} m{0.58\textwidth} m{0.15\textwidth}}
+    \toprule
+    \textbf{Symbol} & \textbf{Meaning} & \textbf{Unit} \\
+    \midrule
+    $F$ & Force exerted by the spring & \si{\newton} \\
+    $k$ & Spring constant & \si{\newton\per\metre} \\
+    $e_\txt{total}$ & Total efficiency & -- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section*{List of abbreviations}
+\addcontentsline{toc}{section}{List of abbreviations}
+% Only abbreviations used with \ac{...} are printed (with the page of first
+% use).
+\begin{acronym}[SOC]
+  \acro{SOC}{system on chip}
+  \acro{ADC}{analog-to-digital converter}
+\end{acronym}
+
+% Optional for long reports:
+% \listoffigures
+% \listoftables
+
+\mainmatter
+% ------------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:introduction}
+% The mini version of the report: trends leading to the problem, the problem
+% statement, what is new, the approach and solution, and how the report is
+% organized.
+Start with the context that leads to the problem.
+State the problem precisely and the requirements a solution must meet.
+Summarize the approach and the main claims, which the rest of the report proves.
+
+The report is organized as follows.
+\Cref{sec:related} compares this work with existing solutions.
+\Cref{sec:approach} describes the approach, \cref{sec:setup} the experimental setup, and \cref{sec:results} the results.
+\Cref{sec:conclusions} concludes.
+
+% ------------------------------------------------------------------------------
+\section{Related work}
+\label{sec:related}
+% How this work differs from, improves on, or extends other work. Not just a
+% list.
+Earlier designs used a counterweight~\cite{knuth1986} or a spring~\cite{bbc_springs}.
+Unlike both, this work \todo{state the difference}.
+
+% ------------------------------------------------------------------------------
+\section{Approach}
+\label{sec:approach}
+% Short introduction linking to the previous section, subsections, short
+% conclusion linking to the next section.
+This section models the mechanism and derives the design parameters.
+
+\subsection{Model}
+\label{sec:model}
+The spring force follows Hooke's law, given in \cref{eq:hooke}.
+\begin{equation}
+  F = k \, \delta
+  \label{eq:hooke}
+\end{equation}
+With $k = \SI{250}{\newton\per\metre}$ and a compression of \SI{40}{\milli\metre}, the force is \SI{10}{\newton}.
+\begin{block}{Claim}
+  The design reaches \SI{10}{\metre} with \SI{20}{\gram}.
+\end{block}
+The \ac{ADC} on the \ac{SOC} samples the force sensor; a second use of \ac{ADC} is not expanded again.
+
+\subsection{Design}
+\label{sec:design}
+\Cref{fig:overview} shows the parts of the design, and \cref{fig:steps} the three stages of a launch.
+Explain what the reader should learn from each figure, not only what it shows.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{example-image}
+  \caption{Overview of the design. Captions go below figures.}
+  \label{fig:overview}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{example-image-a}
+    \caption{Loaded}
+    \label{fig:steps-a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{example-image-b}
+    \caption{Released}
+    \label{fig:steps-b}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.3\textwidth}
+    \includegraphics[width=\textwidth]{example-image-c}
+    \caption{Launched}
+    \label{fig:steps-c}
+  \end{subfigure}
+  \caption{The three stages of a launch.}
+  \label{fig:steps}
+\end{figure}
+
+% ------------------------------------------------------------------------------
+\section{Experimental setup}
+\label{sec:setup}
+% Why each experiment is done (to prove a claim), then how. Enough detail to
+% reproduce it.
+Each experiment tests one claim from \cref{sec:introduction}.
+\Cref{tab:setup} lists the settings.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Settings of the experiments. Captions go above tables.}
+  \label{tab:setup}
+  \rowcolors{2}{Tue-accent!10}{white}
+  \begin{tabular}{lccc}
+    \toprule
+    \color{Tue-accent}\textbf{Run} & \color{Tue-accent}\textbf{Mass (\si{\gram})}
+    & \color{Tue-accent}\textbf{Angle (\si{\degree})}
+    & \color{Tue-accent}\textbf{Repeats} \\
+    \midrule
+    A & 20 & 30 & 5 \\
+    B & 20 & 45 & 5 \\
+    C & 25 & 45 & \NA \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ------------------------------------------------------------------------------
+\section{Results}
+\label{sec:results}
+% Explain the results (do not only describe them) and show that they prove the
+% claims.
+% Graphs: axes with quantity and unit, the same ranges and legend order across
+% graphs, readable in black and white, vector format (PDF) where possible.
+Run B reached the longest distance, which confirms the claim that \todo{claim}.
+
+% ------------------------------------------------------------------------------
+\section{Conclusions}
+\label{sec:conclusions}
+% Restate the problem and the solution, and that the results prove the claims.
+% No citations.
+Restate the problem, the solution, and the results that prove the claims.
+
+% ------------------------------------------------------------------------------
+\printbibliography[heading=bibintoc, title={References}]
+
+\clearpage
+\appendix
+\section{Calculations}
+\label{app:calculations}
+Long derivations and raw data go in appendices, referred to from the text as
+\cref{app:calculations}.
+
+\end{document}

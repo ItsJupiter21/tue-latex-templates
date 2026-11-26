@@ -1,0 +1,180 @@
+% tuethesis.sty -- thesis and personal reports (BEP, master thesis, internship
+% report) in the house style, on the report class (chapters).
+% Cover: the TU/e EE report cover (TUe_EE_Report_Covers: Bachelor, Master,
+% Intern), redrawn in TikZ with the sizes measured from the TU/e PDF. Inner title
+% page and chapter structure: the TU/e master/bachelor thesis template.
+% Shared fonts, packages, colors, boxes and document data: tuebase.sty.
+% Deviation from the TU/e cover, by choice: mlmodern sans instead of Avenir Next.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tuethesis}[2026/11/25 v1.0 TU/e thesis style]
+\RequirePackage{tuebase}
+\@ifundefined{chapter}{\PackageError{tuethesis}{Use the report class}{}}{}
+\geometry{margin=2.5cm, headheight=17pt}
+\usetikzlibrary{fadings}
+
+% ------------------------------------------------------------------------------
+% Document data on top of tuebase's: type line, student number
+% ------------------------------------------------------------------------------
+\def\@reporttype{Master thesis}
+\def\@reportstudentid{}
+\newcommand\reporttype[1]{\def\@reporttype{#1}}
+\newcommand\reportstudentid[1]{\def\@reportstudentid{#1}}
+% PDF subject: "Master thesis, Department of ..., Eindhoven University of Technology"
+\def\@reportsubject{\@reporttype, \@reportdepartment, Eindhoven University of Technology}
+% Darken the bottom of the cover photo so the white text stays legible (the
+% cover manual's "Extra color" layer; only when needed): \coverdarkentrue
+\newif\ifcoverdarken
+
+% ------------------------------------------------------------------------------
+% Numbering and headings: Figure 3.1 = first figure of Chapter 3 (report class)
+% ------------------------------------------------------------------------------
+\setcounter{tocdepth}{1}                 % ToC: chapters and sections
+\setcounter{secnumdepth}{2}
+\titleformat{\chapter}[hang]{\sffamily\color{Tue-accent}\huge\bfseries}
+{\thechapter\enskip\color{gray}\textbar\enskip}{0cm}{}
+\titlespacing*{\chapter}{0pt}{0pt}{1.5\baselineskip}
+
+% ------------------------------------------------------------------------------
+% Header and footer: logo | chapter, version | page | date
+% ------------------------------------------------------------------------------
+\renewcommand\chaptermark[1]{\markboth{%
+\ifnum\c@secnumdepth>\m@ne\thechapter\enskip\textbar\enskip\fi#1}{}}
+\fancypagestyle{tuethesis}{%
+  \fancyhf{}%
+  \fancyhead[L]{%
+  \includegraphics[height=12pt]{figures/tue/tue-logo-scarlet.pdf}}%
+  \fancyhead[R]{\small\nouppercase{\leftmark}}%
+  \fancyfoot[L]{\small\color{gray}\@reportversion}%
+  \fancyfoot[C]{\thepage}%
+  \fancyfoot[R]{\small\color{gray}\@reportfooter}%
+  \renewcommand\headrulewidth{0.4pt}%
+\renewcommand\footrulewidth{0.4pt}}
+\fancypagestyle{plain}{\pagestyle{tuethesis}}  % chapter pages look the same
+\pagestyle{tuethesis}
+
+% Front matter (abstract, contents) in roman numerals, the body from 1
+\newcommand\frontmatter{\cleardoublepage\pagenumbering{roman}}
+\newcommand\mainmatter{\cleardoublepage\pagenumbering{arabic}}
+% Unnumbered chapter that is still in the contents and the header (Abstract)
+\newcommand\frontchapter[1]{%
+\chapter*{#1}\addcontentsline{toc}{chapter}{#1}\markboth{#1}{}}
+
+% ------------------------------------------------------------------------------
+% Cover (front): \makecover
+% EE report cover, front half, A4 (mm from the top left, measured):
+%   photo 0-171, dark band 171-225 (type, title, subtitle, author, number, date),
+%   red band 225-261 (department), white bar 261-297 (logo).
+% No photo: the photo area is TU/e red. Use a dark enough photo (cover manual).
+% ------------------------------------------------------------------------------
+\newsavebox\tuer@imgbox
+% bands and logo; #1: text x (mm), front 27, back 47; #2: 1 = photo behind
+\newcommand\tuer@coverbands[2]{%
+  \ifnum#2=1
+  % over a photo: the dark band tints it red, the department strip shows it
+  \fill[Tue-red, blend mode=multiply] (0,171) rectangle (210,225);
+  \else
+  \fill[Tue-red!65!black] (0,171) rectangle (210,225);
+  \fill[Tue-red] (0,225) rectangle (210,261);
+  \fi
+  \fill[white] (0,261) rectangle (210,297);
+  \node[anchor=base west, inner sep=0pt, text=white,
+  font=\sffamily\bfseries\fontsize{9.5}{11}\selectfont]
+  at (#1,244.1) {\MakeUppercase{\@reportdepartment}};
+  % logo at its native size; the PDF includes the protected space (3.64 mm)
+  \node[anchor=north west, inner sep=0pt] at (#1-3.64,268.16)
+  {\includegraphics[width=79.21mm]{figures/tue/tue-logo-descriptor-line-scarlet.pdf}};
+}
+% ------------------------------------------------------------------------------
+% Cover (front): \makecover
+% EE report cover, front half, A4 (mm from the top left, measured):
+%   photo 0-261, dark band 171-225 (type, title, subtitle, author, number,
+%   date), department 225-261, white bar 261-297 (logo).
+% No photo: TU/e red with a dark red band, like the back cover. Use a dark
+% enough photo (cover manual); \coverdarkentrue darkens its lower part.
+% ------------------------------------------------------------------------------
+\newcommand\makecover{%
+  \cleardoublepage\pagenumbering{Alph}% cover pages: A, B (unique PDF anchors)
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture, overlay, x=1mm, y=-1mm,
+    shift={(current page.north west)}]
+    \ifx\@reportcoverimage\@empty
+    \fill[Tue-red] (0,0) rectangle (210,171);
+    \tuer@coverbands{27}{0}
+    \else
+    % photo fills 210 x 261 mm, cropped to the area
+    \sbox\tuer@imgbox{\includegraphics{\@reportcoverimage}}%
+    \pgfmathsetmacro\tuer@scale{max(210mm/\wd\tuer@imgbox,
+    261mm/\ht\tuer@imgbox)}%
+    \begin{scope}
+      \clip (0,0) rectangle (210,261);
+      \node[inner sep=0pt] at (105,130.5)
+      {\includegraphics[scale=\tuer@scale]{\@reportcoverimage}};
+    \end{scope}
+    \ifcoverdarken
+    \fill[black, fill opacity=0.55, path fading=north]
+    (0,120) rectangle (210,171);
+    \fill[black, fill opacity=0.55] (0,171) rectangle (210,261);
+    \fi
+    \tuer@coverbands{27}{1}
+    \fi
+    \node[anchor=north west, inner sep=0pt, text=white, text width=135mm,
+    text block, font=\sffamily] at (27,178.6) {%
+      {\fontsize{10}{12}\selectfont\bfseries\MakeUppercase{\@reporttype}\par}
+      \vspace{1mm}
+      {\fontsize{17}{18}\selectfont\bfseries\@reporttitle\par}
+      \ifx\@reportsubtitle\@empty\else
+      \vspace{1.6mm}{\fontsize{10}{12.5}\selectfont\@reportsubtitle\par}
+      \fi
+      \vspace{4mm}
+      {\fontsize{10}{12.5}\selectfont
+        \@reportauthors\par
+        \ifx\@reportstudentid\@empty\else\@reportstudentid\par\fi
+    \@reportdate\par}};
+  \end{tikzpicture}
+\null\clearpage}
+
+% ------------------------------------------------------------------------------
+% Back cover: \makebackcover (last page; TU/e address in the dark band)
+% ------------------------------------------------------------------------------
+\newcommand\makebackcover{%
+  \clearpage\if@twoside\ifodd\c@page\hbox{}\thispagestyle{empty}\newpage\fi\fi
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture, overlay, x=1mm, y=-1mm,
+    shift={(current page.north west)}]
+    \fill[Tue-red] (0,0) rectangle (210,171);
+    \tuer@coverbands{47}{0}
+    \node[anchor=north west, inner sep=0pt, text=white, text block,
+    font=\sffamily\fontsize{10}{12.5}\selectfont] at (47,189.6)
+    {PO Box 513\\5600 MB Eindhoven\\The Netherlands\\tue.nl};
+  \end{tikzpicture}
+\null\clearpage}
+
+% ------------------------------------------------------------------------------
+% Inner title page (TU/e thesis template): \maketitlepage
+% ------------------------------------------------------------------------------
+\newcommand\maketitlepage{%
+  \clearpage\thispagestyle{empty}
+  \begingroup
+  \sffamily\raggedright
+  \includegraphics[width=0.4\textwidth]{figures/tue/tue-logo-descriptor-line-scarlet.pdf}
+  \par\vspace{1.5cm}
+  {\large\@reportdepartment\par}
+  \ifx\@reportgroup\@empty\else{\large\@reportgroup\par}\fi
+  \vspace{3cm}
+  {\color{Tue-red}\Huge\bfseries\@reporttitle\par}
+  \ifx\@reportsubtitle\@empty\else\vspace{0.4cm}{\Large\@reportsubtitle\par}\fi
+  \vspace{0.6cm}
+  {\Large\@reporttype\par}
+  \vspace{1.5cm}
+  {\Large\@reportauthors\par}
+  \ifx\@reportstudentid\@empty\else{\color{gray}\@reportstudentid\par}\fi
+  \vfill
+  \ifx\@reportsupervisor\@empty\else
+  {\bfseries Supervisors:\par}\vspace{2pt}
+  {\@reportsupervisor\par}\vspace{1cm}
+  \fi
+  {\tuer@placedate\quad{\color{gray}\textbar\quad\@reportversion}\par}
+  \endgroup
+\clearpage}
+
+\endinput

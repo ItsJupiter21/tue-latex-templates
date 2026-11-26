@@ -1,0 +1,118 @@
+# copier template: new document in the house style (CBL report, note, thesis or
+# personal report, slides, poster, cue cards).
+#   copier copy --trust gh:ItsJupiter21/tue-latex-templates <folder>   new project
+#   copier update                               in a project: pull later template changes
+# The template folders stay plain, buildable LaTeX: the answers are written into the
+# .tex by fill.py after copying. Updates never touch the text files.
+_min_copier_version: "9"
+_subdirectory: >-
+  {{ {'cbl': 'cbl-report', 'note': 'cbl-report', 'thesis': 'thesis',
+      'slides': 'beamer', 'poster': 'poster', 'cuecards': 'cuecards'}[kind] }}
+_exclude:
+  - "{{ 'note.tex' if kind == 'cbl' else '' }}"
+  - "{{ 'main.tex' if kind == 'note' else '' }}"
+  - "snapshots"
+# your text: written once, then never overwritten by copier update
+_skip_if_exists:
+  - main.tex
+  - note.tex
+  - thesis.tex
+  - slides.tex
+  - poster.tex
+  - cuecards.tex
+  - references.bib
+_tasks:
+  - command: [python3, "{{ _copier_conf.src_path }}/fill.py", "{{ _copier_answers | tojson }}"]
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: >-
+      git rev-parse --git-dir >/dev/null 2>&1 ||
+      (git init -q && git add -A && git commit -qm "Start {{ kind }} from LaTeX template")
+    when: "{{ _copier_operation == 'copy' }}"
+
+kind:
+  type: str
+  help: What are you making?
+  choices:
+    "CBL report (group project: cover, contents, paper structure)": cbl
+    "Short note (SSA, weekly or lab note)": note
+    "Thesis or personal report (BEP, master thesis, internship report)": thesis
+    "Presentation (beamer slides)": slides
+    "Poster (TU/e scientific poster)": poster
+    "Cue cards for a talk (logo side + text side)": cuecards
+thesis_type:
+  type: str
+  help: Type line on the cover
+  choices:
+    - Master thesis
+    - Bachelor thesis
+    - Internship report
+    - Report
+  default: Master thesis
+  when: "{{ kind == 'thesis' }}"
+title:
+  type: str
+  help: Title
+  default: >-
+    {{ {'cbl': 'Title of the report', 'note': 'SSA NUMBER',
+        'thesis': 'Title of the thesis', 'slides': 'Title of the presentation',
+        'poster': 'Title of the poster', 'cuecards': 'Title of the talk'}[kind] }}
+subtitle:
+  type: str
+  help: Subtitle (empty to hide)
+  default: ""
+  when: "{{ kind in ['thesis', 'poster'] }}"
+course:
+  type: str
+  help: Course line (e.g. 5EWC0 -- Course name)
+  default: COURSE CODE -- Course name
+  when: "{{ kind in ['cbl', 'slides'] }}"
+name:
+  type: str
+  help: Your name
+  default: Name Surname
+  when: "{{ kind in ['note', 'thesis', 'slides', 'cuecards'] }}"
+student_id:
+  type: str
+  help: Student number (empty to hide)
+  default: ""
+  when: "{{ kind == 'thesis' }}"
+version:
+  type: str
+  help: Version (v0.x drafts, v1.0 first release)
+  default: v0.1
+  when: "{{ kind in ['cbl', 'note', 'thesis'] }}"
+group:
+  type: str
+  help: "{{ 'Research group (empty to hide)' if kind == 'thesis' else 'Group (empty to hide)' }}"
+  default: ""
+  when: "{{ kind in ['cbl', 'thesis'] }}"
+authors:
+  type: str
+  help: >-
+    {{ 'Authors, as they appear under the title (empty to hide)' if kind == 'poster'
+       else 'Authors with student IDs, comma-separated (Name Surname 1234567, ...), empty to hide' }}
+  default: ""
+  when: "{{ kind in ['cbl', 'poster'] }}"
+supervisor:
+  type: str
+  help: >-
+    {{ 'Supervisors / committee, comma-separated, empty to hide' if kind == 'thesis'
+       else 'Supervisor line (e.g. Tutor -- Name Surname), empty to hide' }}
+  default: ""
+  when: "{{ kind in ['cbl', 'thesis'] }}"
+department:
+  type: str
+  help: Department
+  default: Department of Electrical Engineering
+  when: "{{ kind in ['thesis', 'poster'] }}"
+accent:
+  type: str
+  help: >-
+    Accent color as hex (e.g. 003399), empty for TU/e Scarlet. TU/e manual: a full,
+    dark enough color taken from your cover image, not a red; for headings,
+    bullets, boxes
+  default: ""
+  validator: >-
+    {% set h = accent | replace('#', '') | upper %}{% if accent and (h | length != 6
+    or h | list | reject('in', '0123456789ABCDEF') | list | length > 0) %}Six hex
+    digits, e.g. 003399{% endif %}

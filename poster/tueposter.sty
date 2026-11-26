@@ -1,0 +1,109 @@
+% tueposter.sty -- TU/e scientific poster in the house style.
+% Layout from the official TU/e LaTeX package tueposter2018 and the "TU/e
+% Scientific Poster" user directions: white logo bar with the TU/e logo top
+% right, a colored title bar (title, subtitle, authors), two columns, the
+% department at the bottom left.
+% Designed on A4 and scaled up when printing (A1 = A4 x 2.83): print at "fit to
+% page"/"actual size on A1"; use vector graphics or high-resolution images.
+% Branding (directions, "layout options title bar"):
+%   TU/e only (default): scarlet bar, scarlet logo.
+%   \dualbranding{partner-logo}{partner-color}: bar in the partner's color, TU/e
+%     logo in white on a square of that color, partner logo next to it.
+%   \multibranding{logo1, logo2, ...}: bar and square 60 % black.
+% Shared fonts, packages, colors and document data: tuebase.sty.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tueposter}[2026/11/25 v1.0 TU/e poster]
+\RequirePackage{tuebase}
+\RequirePackage{multicol}
+% PDF subject: the subtitle, else "Scientific poster"
+\def\@reportsubject{\ifx\@reportsubtitle\@empty Scientific poster\else\@reportsubtitle\fi}
+
+% ------------------------------------------------------------------------------
+% Geometry (tueposter2018, standard margins), A4 portrait
+% ------------------------------------------------------------------------------
+\newlength\tuep@logobar     \setlength\tuep@logobar{3.7cm}
+\newlength\tuep@titlebar    \setlength\tuep@titlebar{3.8cm}
+\newlength\tuep@logoheight  \setlength\tuep@logoheight{2.3cm}
+\newlength\tuep@partnerh    \setlength\tuep@partnerh{1.8cm}
+\newlength\tuep@marginx     \setlength\tuep@marginx{1.7cm}
+\newlength\tuep@marginy     \setlength\tuep@marginy{1.6cm}
+\geometry{left=1.7cm, right=1.7cm, top=8cm, bottom=3cm}
+\setlength\columnsep{1cm}
+\pagestyle{empty}
+\renewcommand\familydefault{\sfdefault}   % sans text, as tueposter2018 (Noto)
+\setlength\parskip{0.4\baselineskip}
+
+% ------------------------------------------------------------------------------
+% Branding
+% ------------------------------------------------------------------------------
+\colorlet{tuep@bar}{Tue-red}
+\def\tuep@partners{}
+\def\tuep@mode{tue}
+\newcommand\dualbranding[2]{\def\tuep@mode{dual}\def\tuep@partners{#1}%
+\colorlet{tuep@bar}{#2}}
+\newcommand\multibranding[1]{\def\tuep@mode{multi}\def\tuep@partners{#1}%
+\colorlet{tuep@bar}{black!60}}
+
+% ------------------------------------------------------------------------------
+% Headings: headline caps, bold, blue (directions: "HEADLINE (CAPS)"); in the
+% accent color when one is set with \accentcolor
+% ------------------------------------------------------------------------------
+\colorlet{tuep@head}{Tue-blue}
+\AtBeginDocument{\iftue@accent\colorlet{tuep@head}{Tue-accent}\fi}
+\titleformat{\section}{\sffamily\color{tuep@head}\large\bfseries\MakeUppercase}
+{}{0pt}{}
+\titlespacing*{\section}{0pt}{1.2ex}{0.4ex}
+\titleformat{\subsection}{\sffamily\bfseries}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{0.8ex}{0.2ex}
+\setcounter{secnumdepth}{0}
+
+% Figures in columns (no floats in multicols): \posterfigure[width]{file}{caption}
+\newcommand\posterfigure[3][\linewidth]{%
+  \par\medskip{\centering\includegraphics[width=#1]{#2}\par}
+\captionof{figure}{#3}\medskip}
+
+% ------------------------------------------------------------------------------
+% Title: logo bar, title bar, department; \maketitle at the start of document
+% ------------------------------------------------------------------------------
+\def\tuep@tuelogo{figures/tue/tue-logo-descriptor-line-scarlet.pdf}
+\renewcommand\maketitle{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (nw) at (current page.north west);
+    % title bar
+    \fill[tuep@bar] ([yshift=-\tuep@logobar]nw) rectangle
+    ([yshift=-\tuep@logobar-\tuep@titlebar]current page.north east);
+    % logos, right-aligned 1 cm from the edge, centered in the logo bar + 5 mm
+    \ifx\tuep@mode\tuep@tue
+    \node[anchor=east, inner sep=0pt] at ([xshift=-10mm,
+    yshift=-\tuep@logobar/2-5mm]current page.north east)
+    {\includegraphics[height=\tuep@logoheight]{\tuep@tuelogo}};
+    \else
+    \node[anchor=east, inner sep=0pt] at ([xshift=-17mm,
+    yshift=-\tuep@logobar/2-7mm]current page.north east) {%
+      \foreach \l in \tuep@partners {%
+        \includegraphics[height=\tuep@partnerh, width=1.6\tuep@partnerh,
+      keepaspectratio]{\l}\hspace{4mm}}%
+      \colorbox{tuep@bar}{\includegraphics[height=\tuep@partnerh]%
+    {figures/tue/tue-logo-descriptor-stack-white.pdf}}};
+    \fi
+    % title, subtitle, authors: centered in the bar (tueposter2018 hangs them
+    % 2 mm below its top edge, which leaves the bar's lower half empty)
+    \node[anchor=west, inner sep=0pt, text=white, text width=\paperwidth-2\tuep@marginx,
+    text block] at ([xshift=\tuep@marginx,
+    yshift=-\tuep@logobar-\tuep@titlebar/2]nw) {%
+      {\fontsize{24}{26}\selectfont\bfseries\@reporttitle\par}
+      \ifx\@reportsubtitle\@empty\else
+      \vspace{1ex}{\fontsize{16}{16}\selectfont\bfseries\@reportsubtitle\par}
+      \fi
+      \ifx\@reportauthors\@empty\else
+      \vspace{1.5ex}{\fontsize{14}{16}\selectfont\@reportauthors\par}
+    \fi};
+    % department, bottom left
+    \node[anchor=west, inner sep=0pt,
+    font=\sffamily\bfseries\fontsize{10}{10}\selectfont]
+    at ([xshift=\tuep@marginx, yshift=\tuep@marginy+4mm]current page.south west)
+    {\MakeUppercase{\@reportdepartment}};
+\end{tikzpicture}}
+\def\tuep@tue{tue}
+
+\endinput

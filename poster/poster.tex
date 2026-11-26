@@ -1,0 +1,56 @@
+% !TeX program = latexmk
+% TU/e scientific poster: logo bar, title bar, two columns, department at the
+% bottom. Designed on A4 and scaled when printing: A1 = 2.83 x, A0 = 4 x. Use
+% vector graphics (PDF) or high-resolution images so they stay sharp.
+% Build: make (or latexmk -pdf poster.tex). Style: tueposter.sty.
+% Writing rules: WRITING.md in the LaTeX templates. One message per poster;
+% every figure explained; graphs with quantity and unit on the axes.
+\documentclass[a4paper, 10pt]{article}
+\usepackage{tueposter}
+\addbibresource{references.bib}
+
+\reporttitle{Title of the poster}
+\reportsubtitle{}                         % empty: no subtitle
+\reportauthors{Name Surname, Name Surname}
+\reportkeywords{}                          % PDF keywords, comma-separated
+\reportdepartment{Department of Electrical Engineering}
+% \dualbranding{figures/partner-logo.pdf}{partner-blue}   % with one partner
+% \multibranding{figures/logo-a.pdf, figures/logo-b.pdf}  % several partners
+% \accentcolor{HTML}{003399}              % secondary color for headings etc.; default Scarlet
+
+\begin{document}
+\maketitle
+
+\begin{multicols}{2}
+  \section{Problem}
+  State the problem and why it matters in two or three sentences.
+  The design must reach \SI{10}{\metre} with a \SI{20}{\gram} projectile.
+
+  \section{Approach}
+  The spring stores the energy, given by Hooke's law:
+  \begin{equation*}
+    F = k \, \delta .
+  \end{equation*}
+  With $k = \SI{250}{\newton\per\metre}$ and a compression of \SI{40}{\milli\metre}, the force is \SI{10}{\newton}~\cite{knuth1986}.
+
+  \posterfigure[0.9\linewidth]{example-image}{Every figure is explained in the text.}
+
+  \columnbreak
+  \section{Results}
+  \begin{itemize}
+    \item Three runs, all within \SI{0.5}{\metre} of the prediction.
+    \item \textcolor{Tue-accent}{Highlight} key words in the accent color, sparingly.
+  \end{itemize}
+
+  \begin{block}{Claim}
+    The design reaches \SI{10}{\metre} with \SI{20}{\gram}.
+  \end{block}
+
+  \section{Conclusion}
+  What the results mean, in one or two sentences.
+
+  \section{References}
+  {\footnotesize\printbibliography[heading=none]}
+\end{multicols}
+
+\end{document}

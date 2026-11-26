@@ -1,0 +1,64 @@
+{
+  // LaTeX Workshop: build with latexmk (runs biber too) on every save, PDF in a tab
+  "latex-workshop.latex.recipe.default": "first",
+  "latex-workshop.latex.build.forceRecipeUsage": true,
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.autoClean.run": "never",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.linting.chktex.enabled": true,
+  "latex-workshop.linting.chktex.exec.args": ["-n1", "-n8", "-n24", "-n36", "-n46", "-q"],
+
+  // Format on save with tex-fmt (indentation only, no line wrapping: one sentence per line)
+  "latex-workshop.formatting.latex": "tex-fmt",
+  "latex-workshop.formatting.tex-fmt.args": ["--nowrap"],
+  "[latex]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
+
+  // LTeX+: spelling and grammar, American English
+  "ltex.language": "en-US",
+  "ltex.additionalRules.motherTongue": "nl",
+  "ltex.checkFrequency": "save",
+  // Arguments that are not prose (color names, labels, units) are not spell-checked
+  "ltex.latex.commands": {
+    "\\color{}": "ignore",
+    "\\textcolor{}": "ignore",
+    "\\colorbox{}": "ignore",
+    "\\rowcolors{}{}{}": "ignore",
+    "\\cellcolor{}": "ignore",
+    "\\definecolor{}{}{}": "ignore",
+    "\\setbeamercolor{}{}": "ignore",
+    "\\setbeamerfont{}{}": "ignore",
+    "\\setbeamertemplate{}{}": "ignore",
+    "\\usetheme{}": "ignore",
+    "\\addbibresource{}": "ignore",
+    "\\reportversion{}": "ignore",
+    "\\SI{}{}": "dummy",
+    "\\si{}": "dummy",
+    "\\SIrange{}{}{}": "dummy",
+    "\\ac{}": "dummy",
+    "\\acro{}{}": "ignore",
+    "\\reportcoverimage{}": "ignore",
+    "\\reportstudentid{}": "ignore",
+    "\\cardlogo{}": "ignore",
+    "\\cardlogo[]{}": "ignore",
+    "\\cardfontsize{}{}": "ignore",
+    "\\accentcolor{}{}": "ignore",
+    "\\dualbranding{}{}": "ignore",
+    "\\multibranding{}": "ignore",
+    "\\posterfigure{}{}": "dummy",
+    "\\posterfigure[]{}{}": "dummy"
+  },
+  "ltex.latex.environments": {
+    "tabular": "default",
+    "acronym": "ignore"
+  },
+
+  // One sentence per line: wrap long lines on screen only
+  "editor.wordWrap": "on",
+  "files.exclude": {
+    "**/*.{aux,bbl,bcf,blg,fdb_latexmk,fls,log,out,run.xml,toc,lof,lot,nav,snm,vrb,synctex.gz}": true
+  }
+}

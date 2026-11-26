@@ -1,0 +1,176 @@
+% !TeX program = latexmk
+% Thesis or personal report (BEP, master thesis, internship report): EE report
+% cover, title page, abstract, contents, chapters in the order of a scientific
+% argument (SM1-SM6, TU/e thesis template), references, appendices.
+% Build: make (or latexmk -pdf thesis.tex). Style: tuethesis.sty.
+% References: references.bib. Writing rules: WRITING.md in the LaTeX templates.
+% Printed and bound: add twoside to the class options (chapters start on the
+% right, back cover on an even page).
+\documentclass[a4paper, 11pt]{report}
+\usepackage{tuethesis}
+\addbibresource{references.bib}
+
+\reporttype{Master thesis}               % Bachelor thesis, Internship report, ...
+\reporttitle{Title of the thesis}
+\reportsubtitle{}                         % empty: no subtitle
+\reportauthors{Name Surname}
+\reportkeywords{}                          % PDF keywords, comma-separated
+\reportstudentid{1234567}                 % empty: hidden
+\reportversion{v0.1}                      % v0.x drafts, v1.0 first release
+\reportgroup{}                            % research group, empty: hidden
+\reportdepartment{Department of Electrical Engineering}
+\reportsupervisor{%
+  First committee member (supervisor)\\
+  Second committee member\\
+}
+% \reportcoverimage{figures/cover.jpg}    % dark photo; none: plain TU/e red
+% \coverdarkentrue                        % darken the photo bottom if needed
+% \reportdate{25 November 2026}           % default: \today
+% \accentcolor{HTML}{003399}              % secondary color for headings etc.; default Scarlet
+
+\begin{document}
+
+\makecover
+\maketitlepage
+
+\frontmatter
+% Abstract: one sentence (two at most) for each point, written last.
+% 1. The topic, in words your reader understands.
+% 2. The problem: the key research question.
+% 3. Why nobody has answered it yet (the gap in the literature).
+% 4. How you tackled it: the big new idea.
+% 5. How you did the research (experiments, software, case studies).
+% 6. The key impact: what it means and why others should care.
+% No citations.
+\frontchapter{Abstract}
+State the topic, the research question, the gap, the idea, the method, and the
+impact, one sentence each.
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\frontchapter{List of abbreviations}
+\begin{acronym}[ADC]
+  \acro{ADC}{analog-to-digital converter}
+\end{acronym}
+
+\mainmatter
+% ------------------------------------------------------------------------------
+\chapter{Introduction}
+\label{ch:introduction}
+% The whole argument in one chapter, readable on its own by anyone in the
+% field: problem, method, relevant execution details, results, and their
+% interpretation. Write it last; keep notes for each section while writing the
+% later chapters.
+% Opening paragraph: the chapter's topic, its sections in order with forward
+% references.
+This chapter summarizes the work.
+\Cref{sec:context} introduces the topic, \cref{sec:state-of-the-art} the state
+of the art, \cref{sec:research-question} the research question,
+\cref{sec:method} the method, and \cref{sec:findings} the findings.
+
+\section{Context and topic (SM1)}
+\label{sec:context}
+% The general subject, the specific topic of interest, and what society or
+% science wants to know about it. Understandable for a general scientific
+% audience.
+
+\section{State of the art (SM1)}
+\label{sec:state-of-the-art}
+% Established facts, methods and results on the topic, ending with the
+% knowledge gap this work addresses.
+
+\section{Research question (SM2)}
+\label{sec:research-question}
+% The specific part of the gap this work addresses, with its assumptions made
+% explicit.
+
+\section{Method or approach (SM3, SM4)}
+\label{sec:method}
+% The steps someone else needs to reproduce the work, including how success is
+% evaluated. Refer to the chapters with the details.
+
+\section{Findings (SM5, SM6)}
+\label{sec:findings}
+% The evaluation setup, the results, and their interpretation: a summary of
+% \cref{ch:evaluation}.
+
+% ------------------------------------------------------------------------------
+\chapter{Background (SM1)}
+\label{ch:background}
+% Exactly the preliminaries a student in your program who did not study this
+% subject needs to follow the rest; related work that the state of the art in
+% the introduction only summarized.
+
+% ------------------------------------------------------------------------------
+\chapter{Problem exposition (SM1--SM3)}
+\label{ch:problem}
+% Optional: only when the introduction does not give enough detail about the
+% problem context, the data, the requirements, or the method.
+
+\section{Context (SM1)}
+\section{Detailed research questions (SM2)}
+\section{Detailed method (SM3)}
+
+% ------------------------------------------------------------------------------
+\chapter{First sub-problem}
+\label{ch:first}
+% From here on: execution (SM4), results (SM5) and interpretation (SM6), one
+% sub-problem per chapter or section, each again as a small scientific
+% argument. First paragraph: the sub-problem and the requirements a solution
+% must meet, based on the preceding chapters.
+The spring force follows Hooke's law, \cref{eq:hooke}.
+\begin{equation}
+  F = k \, \delta
+  \label{eq:hooke}
+\end{equation}
+With $k = \SI{250}{\newton\per\metre}$ and a compression of \SI{40}{\milli\metre}, the force is \SI{10}{\newton}~\cite{knuth1986}.
+The \ac{ADC} samples the force sensor.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{example-image}
+  \caption{Every figure is referred to and explained in the text.}
+  \label{fig:example}
+\end{figure}
+
+\section{Design}
+\label{sec:design}
+\Cref{fig:example} shows the design.
+
+% ------------------------------------------------------------------------------
+\chapter{Second sub-problem}
+\label{ch:second}
+
+% ------------------------------------------------------------------------------
+\chapter{Evaluation}
+\label{ch:evaluation}
+% The most formal chapter: the evaluation of the whole work against the
+% research question.
+
+\section{Objective (SM2)}
+\section{Setup (SM3)}
+\section{Execution (SM4)}
+\section{Results (SM5)}
+% Describe and summarize the measurements; do not interpret them here.
+\section{Discussion (SM6)}
+% Interpret the results: what they mean for the research question, and their
+% limitations.
+
+% ------------------------------------------------------------------------------
+\chapter{Conclusion}
+\label{ch:conclusion}
+% The problem, the solution, the results that answer the research question, and
+% future work. No citations.
+
+% ------------------------------------------------------------------------------
+\printbibliography[heading=bibintoc, title={References}]
+
+\appendix
+\chapter{First appendix}
+\label{app:first}
+Long derivations and raw data, referred to from the text as \cref{app:first}.
+
+\makebackcover
+\end{document}

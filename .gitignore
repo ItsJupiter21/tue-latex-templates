@@ -1,0 +1,32 @@
+# Build output (only source files in git)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.synctex.gz
+*.xdv
+*.pdf
+# ...except the logo/banner graphics
+!**/figures/**/*.pdf
+# ...and released versions (the submitted PDF)
+!**/snapshots/*.pdf
+
+# Brand guide, official TU/e templates and their text extracts: local reference
+# only (not ours to publish)
+sources/
+*.dvi
+*-SAVE-ERROR
+
+# Session notes, local only
+handoffs/

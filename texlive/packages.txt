@@ -1,0 +1,19 @@
+# LaTeX files the templates and my usual packages need, as file names (dnf resolves them
+# with tex(<file>), so only the matching texlive-* packages get installed, not the whole repo).
+# Install/repair: ./install-packages.sh     Add one: append its .sty/.cls name here and re-run.
+
+# Base: classes, fonts, graphics
+article.cls beamer.cls graphicx.sty xcolor.sty tikz.sty lmodern.sty mlmodern.sty t1enc.def
+
+# Jupiter's SSA / DBL template packages
+amsmath.sty amssymb.sty amsthm.sty lipsum.sty float.sty caption.sty subcaption.sty
+wrapfig.sty tabularx.sty booktabs.sty siunitx.sty tocbibind.sty geometry.sty microtype.sty
+titlesec.sty titletoc.sty appendix.sty fancyhdr.sty enumitem.sty xurl.sty hyperref.sty
+cleveref.sty multirow.sty
+
+# Acronyms, index, compact lists
+acronym.sty makeidx.sty paralist.sty
+
+# Used by the report/beamer templates
+biblatex.sty ieee.bbx csquotes.sty lastpage.sty appendixnumberbeamer.sty mwe.sty etoolbox.sty
+pdfpages.sty listings.sty tcolorbox.sty tikzfill.image.sty soul.sty longtable.sty

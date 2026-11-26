@@ -1,0 +1,48 @@
+% tuecolors.sty -- TU/e colors, shared by tuebase.sty and the beamer theme.
+%
+% Accent color (\accentcolor), after the TU/e visual identity manual (pp. 8, 18):
+% TU/e Scarlet is the main color. A publication may add one secondary color, used
+% as an accent for chapter pages, (sub)paragraph headings and color areas. It is
+% taken from the cover image ("coloring principle": the logo square's color) or
+% from a color in the image. Use only full colors (no tints), not too pale (white
+% text must stay legible on it), and not a red close to Scarlet.
+%   \accentcolor{HTML}{003399}      or  \accentcolor{RGB}{0, 51, 153}
+% The logo, covers and title bars stay Scarlet; headings, section and chapter
+% pages, bullets, caption labels, links and the red box follow the accent.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tuecolors}[2026/11/26 v1.0 TU/e colors]
+\RequirePackage{xcolor}
+
+% TU/e Scarlet (brand guide: RGB 200-25-25, #C81919)
+\definecolor{Tue-red}{RGB}{200, 25, 25}
+\definecolor{Tue-gray}{RGB}{110, 110, 110}
+% Accent for headlines on posters (tueposter2018: PMS 300)
+\definecolor{Tue-blue}{RGB}{0, 102, 204}
+
+\colorlet{Tue-accent}{Tue-red}
+\newif\iftue@accent
+\newcommand\accentcolor[2]{\definecolor{Tue-accent}{#1}{#2}\global\tue@accenttrue}
+
+% Warn about an accent the manual rules out: too pale for white text, or too
+% close to Scarlet.
+\AtBeginDocument{\iftue@accent\tue@checkaccent\fi}
+\def\tue@checkaccent{%
+  \extractcolorspecs{Tue-accent}{\tue@model}{\tue@spec}%
+  \convertcolorspec{\tue@model}{\tue@spec}{rgb}\tue@rgb
+  \expandafter\tue@checkrgb\tue@rgb\relax}
+\def\tue@checkrgb#1,#2,#3\relax{%
+  % relative luminance (no gamma; good enough for a warning), and distance to
+  % Scarlet (0.784, 0.098, 0.098)
+  \edef\tue@lum{\fpeval{0.2126*#1 + 0.7152*#2 + 0.0722*#3}}%
+  \edef\tue@dist{\fpeval{sqrt((#1-0.784)^2 + (#2-0.098)^2 + (#3-0.098)^2)}}%
+  \ifdim\tue@lum pt>0.55pt
+  \PackageWarningNoLine{tuecolors}{Accent color is too pale: white text on it
+  (box titles, slide blocks) will be hard to read. The TU/e manual asks for a
+  full, dark enough color}%
+  \fi
+  \ifdim\tue@dist pt<0.2pt
+  \PackageWarningNoLine{tuecolors}{Accent color is close to TU/e Scarlet. The
+  TU/e manual asks for a secondary color that is clearly different}%
+  \fi}
+
+\endinput

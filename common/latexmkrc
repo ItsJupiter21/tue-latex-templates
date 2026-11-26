@@ -1,0 +1,5 @@
+# latexmk settings for every tool that calls it (make, VS Code, TeXstudio):
+# always pdflatex -> PDF (never DVI), biber for biblatex, SyncTeX for source <-> PDF jumps.
+$pdf_mode = 1;
+$bibtex_use = 2;
+$pdflatex = 'pdflatex -synctex=1 %O %S';

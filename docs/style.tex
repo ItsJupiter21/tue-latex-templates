@@ -1,0 +1,78 @@
+% Style sheet for the README screenshots (docs/shots.py builds it).
+% Build: TEXINPUTS=../common:../cbl-report: latexmk -pdf style.tex
+\documentclass[a4paper, 11pt]{article}
+\usepackage{tuereport}
+\geometry{paperwidth=170mm, paperheight=232mm, margin=12mm}
+\pagestyle{empty}
+\setcounter{section}{2}
+
+\newcommand\swatch[3]{%
+  \begin{tikzpicture}
+    \fill[#1, rounded corners=1.5mm] (0,0) rectangle (44mm,14mm);
+    \node[anchor=north west, text=white, font=\sffamily\bfseries\small]
+      at (2.5mm,12mm) {#2};
+    \node[anchor=south west, text=white, font=\sffamily\scriptsize]
+      at (2.5mm,1.5mm) {#3};
+  \end{tikzpicture}}
+
+\begin{document}
+
+\noindent\swatch{Tue-red}{Tue-red}{TU/e Scarlet \#C81919}\hfill
+\swatch{Tue-gray}{Tue-gray}{accents \#6E6E6E}\hfill
+\swatch{Tue-blue}{Tue-blue}{poster headlines \#0066CC}
+
+\section{Section heading}
+\subsection{Subsection heading}
+Body text in mlmodern, one sentence per line in the source.
+Units with \texttt{siunitx} in IEEE form: \SI{250}{\newton\per\metre}, \SI{3.3}{\volt}, \SI{1.2}{\newton\metre}; references as \cref{tab:runs} and \cref{sec:x}.
+
+\subsubsection{Subsubsection heading}\label{sec:x}
+\begin{minipage}[t]{0.48\linewidth}
+  \begin{itemize}
+    \item First level
+      \begin{itemize}
+        \item Second level
+          \begin{itemize}
+            \item Third level
+          \end{itemize}
+      \end{itemize}
+  \end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+  \begin{enumerate}
+    \item First step
+      \begin{enumerate}
+        \item Sub-step
+          \begin{enumerate}
+            \item Detail
+          \end{enumerate}
+      \end{enumerate}
+  \end{enumerate}
+\end{minipage}
+
+\begin{table}[h]
+  \centering
+  \caption{Captions above tables, below figures.}\label{tab:runs}
+  \begin{tabular}{lccc}
+    \toprule
+    \color{Tue-accent}\textbf{Run} & \color{Tue-accent}\textbf{Mass (\si{\gram})}
+    & \color{Tue-accent}\textbf{Angle (\si{\degree})}
+    & \color{Tue-accent}\textbf{Distance (\si{\metre})} \\
+    \midrule
+    A & 20 & 30 & 9.6 \\
+    B & 20 & 45 & 10.2 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{block}{block}
+  The claim of the section, stated once.
+\end{block}
+\begin{alertblock}{alertblock}
+  A warning or a limitation.
+\end{alertblock}
+\begin{exampleblock}{exampleblock}
+  A worked example.
+\end{exampleblock}
+
+\end{document}

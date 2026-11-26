@@ -1,0 +1,241 @@
+% tuebase.sty -- what every house-style document shares (CBL report, note, thesis,
+% poster, cue cards): fonts, packages, TU/e colors, lists, captions, references,
+% boxes and the document data (\reporttitle etc.).
+% Not loaded directly: tuereport.sty, tuethesis.sty, tueposter.sty and
+% tuecards.sty load it and add their own layout.
+% Follows the writing rules in WRITING.md.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tuebase}[2026/11/25 v1.0 TU/e house style, shared part]
+
+% ------------------------------------------------------------------------------
+% Packages (grouped by purpose)
+% ------------------------------------------------------------------------------
+\RequirePackage[T1]{fontenc}            % Hyphenation, accents, copy-paste
+\RequirePackage{mlmodern}               % Font: a darker Latin Modern
+\RequirePackage[american]{babel}        % US English (spelling too)
+\RequirePackage{amsmath, amssymb, amsthm}
+\RequirePackage{geometry}               % Page size: set by each layout
+\RequirePackage{microtype}              % Better spacing, fewer overfull lines
+\RequirePackage{lipsum}                 % Dummy text
+
+\RequirePackage[table]{xcolor}          % Colors; [table]: \rowcolors
+\RequirePackage{graphicx}               % \includegraphics
+\RequirePackage{float}                  % [H] placement
+\RequirePackage{caption}
+\RequirePackage{subcaption}             % Sub-figures
+\RequirePackage{wrapfig}                % Text-wrapped figures
+\RequirePackage{tabularx}               % Full-width tables; m{} columns
+\RequirePackage{booktabs}               % \toprule \midrule \bottomrule
+\RequirePackage{multirow}
+\RequirePackage{siunitx}                % \SI{10}{\milli\metre}: upright units
+% IEEE: 250 N/m, N·m
+\sisetup{per-mode=symbol, inter-unit-product=\ensuremath{\cdot}}
+\RequirePackage{tikz}                   % Covers, drawings
+\usetikzlibrary{positioning, calc}
+% Left-aligned text in a node. Plain align=left fixes the word spacing to the
+% node's first font, so text enlarged inside the node gets tiny spaces.
+\tikzset{text block/.style={align=left,
+execute at begin node={\spaceskip=0pt\xspaceskip=0pt\relax}}}
+\RequirePackage{tcolorbox}              % block, alertblock, exampleblock
+
+\RequirePackage[nottoc]{tocbibind}      % List of figures/tables in the ToC
+\RequirePackage{titlesec}               % Heading style
+\RequirePackage{titletoc}
+\RequirePackage{appendix}
+\RequirePackage{fancyhdr}               % Header and footer
+\RequirePackage{lastpage}               % "page x of y"
+\RequirePackage[shortlabels]{enumitem}  % List styling
+% Abbreviations with page of first use
+\RequirePackage[printonlyused, withpage]{acronym}
+
+% IEEE references, [1] in citation order
+\RequirePackage[style=ieee, backend=biber]{biblatex}
+\RequirePackage{csquotes}               % \enquote{...}: correct ``quotes''
+\RequirePackage{xurl}                   % Line breaks in long URLs
+\RequirePackage{hyperref}               % Clickable references (load late)
+% \cref{fig:x} -> "Figure 2.1" (load last)
+\RequirePackage[noabbrev, capitalise]{cleveref}
+
+% ------------------------------------------------------------------------------
+% Document data, set in the .tex file: \reporttitle{...} etc.
+% Each layout uses the fields it needs.
+% ------------------------------------------------------------------------------
+\def\@reporttitle{Report title}
+\def\@reportsubtitle{}
+\def\@reportversion{v0.1}
+\def\@reportgroup{}
+\def\@reportauthors{}
+\def\@reportsupervisor{}
+\def\@reportplace{Eindhoven}
+\def\@reportdate{\today}
+\def\@reportcoverimage{}
+\def\@reportdepartment{Department of Electrical Engineering}
+\def\@reportheader{\@reporttitle}   % header right; default: the title
+\def\@reportfooter{\@reportdate}    % footer right; default: the date
+\def\@reportkeywords{}
+% PDF subject; the layouts set their own (thesis: type and department)
+\def\@reportsubject{\@reportsubtitle}
+\newcommand\reporttitle[1]{\def\@reporttitle{#1}\title{#1}}
+\newcommand\reportsubtitle[1]{\def\@reportsubtitle{#1}}
+\newcommand\reportversion[1]{\def\@reportversion{#1}}
+\newcommand\reportgroup[1]{\def\@reportgroup{#1}}
+\newcommand\reportauthors[1]{\def\@reportauthors{#1}}
+\newcommand\reportsupervisor[1]{\def\@reportsupervisor{#1}}
+\newcommand\reportplace[1]{\def\@reportplace{#1}}
+\newcommand\reportdate[1]{\def\@reportdate{#1}}
+\newcommand\reportcoverimage[1]{\def\@reportcoverimage{#1}}
+\newcommand\reportdepartment[1]{\def\@reportdepartment{#1}}
+\newcommand\reportheader[1]{\def\@reportheader{#1}}
+\newcommand\reportfooter[1]{\def\@reportfooter{#1}}
+\newcommand\reportkeywords[1]{\def\@reportkeywords{#1}}  % PDF only
+\newcommand\reportsubject[1]{\def\@reportsubject{#1}}    % PDF only
+% "Place, date", or just the date when \reportplace{} is empty
+\newcommand\tuer@placedate{%
+\ifx\@reportplace\@empty\else\@reportplace, \fi\@reportdate}
+% Read-only copies for use in the text
+\newcommand\thereporttitle{\@reporttitle}
+\newcommand\thereportversion{\@reportversion}
+
+% ------------------------------------------------------------------------------
+% Colors and links
+% ------------------------------------------------------------------------------
+% Tue-red (Scarlet), Tue-gray, Tue-blue and Tue-accent (Scarlet unless set with
+% \accentcolor{HTML}{003399}; see tuecolors.sty for the brand rules)
+\RequirePackage{tuecolors}
+\hypersetup{colorlinks=true, linkcolor=Tue-accent, urlcolor=Tue-accent,
+citecolor=Tue-accent, pdfcreator={LaTeX (TU/e house style)}, pdflang=en-US}
+\urlstyle{same}
+% PDF metadata (document properties), filled from the document data
+\AtBeginDocument{\tuer@pdfmeta}
+
+% ------------------------------------------------------------------------------
+% Lists: bullets and numbers in the accent color, three levels
+% ------------------------------------------------------------------------------
+\setlist[itemize,1]{label={\scriptsize\textcolor{Tue-accent}{$\blacksquare$}}}
+\setlist[itemize,2]{label={\scriptsize\textcolor{Tue-accent}{$\square$}}}
+\setlist[itemize,3]{label={\textcolor{Tue-accent}{$\circ$}}}
+\setlist[enumerate,1]{label={\textbf{\textcolor{Tue-accent}{\arabic*.}}}}
+\setlist[enumerate,2]{label={\textbf{\textcolor{Tue-accent}{[\alph*]}}}}
+\setlist[enumerate,3]{label={\textbf{\textcolor{Tue-accent}{\roman*.}}}}
+% Tight list to save space
+\newlist{compactlist}{itemize}{3}
+\setlist[compactlist]{nosep,
+label={\scriptsize\textcolor{Tue-accent}{$\blacksquare$}}}
+
+% ------------------------------------------------------------------------------
+% Headings, captions, references
+% ------------------------------------------------------------------------------
+\titleformat{\section}{\sffamily\color{Tue-accent}\Large\bfseries}
+{\thesection\enskip\color{gray}\textbar\enskip}{0cm}{}
+\titleformat{\subsection}{\sffamily\color{Tue-accent}\large\bfseries}
+{\thesubsection\enskip\color{gray}\textbar\enskip}{0cm}{}
+\titleformat{\subsubsection}{\sffamily\color{Tue-accent}\bfseries}
+{\thesubsubsection\enskip\color{gray}\textbar\enskip}{0cm}{}
+
+% Figure captions below, table captions above (the skip follows this)
+\DeclareCaptionFont{Tue-accent}{\color{Tue-accent}}
+\captionsetup{labelfont={Tue-accent,bf}}
+\captionsetup[table]{position=above}
+\captionsetup[figure]{position=below}
+
+% "Figure 3 in Section 3.2"; subsections are also "Section"
+\crefname{subsection}{Section}{Sections}
+\crefname{subsubsection}{Section}{Sections}
+
+% Paragraphs: no indent, a little space between them instead
+\setlength\parindent{0pt}
+\setlength\parskip{0.5\baselineskip plus 2pt minus 1pt}
+
+% ToC in black, the rest of the document keeps red links
+\let\tuer@tableofcontents\tableofcontents
+\renewcommand\tableofcontents{%
+{\hypersetup{linkcolor=black}\tuer@tableofcontents}}
+
+% ------------------------------------------------------------------------------
+% Boxes in the style of the beamer blocks: rounded, colored title bar fading
+% into a pale body.
+% Same names as beamer's: block (accent color), alertblock (dark gray), exampleblock
+% (gray).
+% ------------------------------------------------------------------------------
+\tcbuselibrary{skins}
+\tcbset{
+  tuebox/.style 2 args={enhanced, arc=1.5mm, boxrule=0pt,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    fonttitle=\sffamily, coltitle=white, colupper=black,
+    before skip=8pt, after skip=8pt, colbacktitle=#1, colback=#2, colframe=#2,
+    overlay={\shade[top color=#1, bottom color=#2]
+  (title.south west) rectangle ([yshift=-1mm]title.south east);}},
+  tuebox red/.style={tuebox={Tue-accent}{Tue-accent!6}},
+  tuebox alert/.style={tuebox={black!75}{black!6}},
+  tuebox example/.style={tuebox={Tue-gray}{black!4}},
+}
+\newtcolorbox{block}[1]{tuebox red, title={#1}}
+\newtcolorbox{alertblock}[1]{tuebox alert, title={#1}}
+\newtcolorbox{exampleblock}[1]{tuebox example, title={#1}}
+
+% ------------------------------------------------------------------------------
+% Small helpers
+% ------------------------------------------------------------------------------
+% empty table cell
+\newcommand{\NA}{---}
+% draft marker, grep for it
+\newcommand{\todo}[1]{\textcolor{Tue-red}{\sffamily[TODO: #1]}}
+% Words in math, $P_\txt{eff}$ not $P_{eff}$
+\newcommand{\txt}[1]{\textit{#1}}
+
+% ------------------------------------------------------------------------------
+% PDF metadata: title, author, subject, keywords, language.
+% Author: the names in \reportauthors; in the CBL table ("Name & ID \\") only
+% the first column. Line breaks become commas, "--" an en dash.
+% ------------------------------------------------------------------------------
+\ExplSyntaxOn
+\seq_new:N \l__tuer_rows_seq
+\seq_new:N \l__tuer_cols_seq
+\tl_new:N \l__tuer_names_tl
+\tl_new:N \l__tuer_name_tl
+\cs_new_protected:Npn \__tuer_pdfnames:
+{
+  \tl_clear:N \l__tuer_names_tl
+  \seq_set_split:NnV \l__tuer_rows_seq { \\ } \@reportauthors
+  \seq_map_inline:Nn \l__tuer_rows_seq
+  {
+    \seq_set_split:Nnn \l__tuer_cols_seq { & } {##1}
+    \seq_get_left:NN \l__tuer_cols_seq \l__tuer_name_tl
+    \tl_if_blank:VF \l__tuer_name_tl
+    {
+      \tl_if_empty:NF \l__tuer_names_tl
+      { \tl_put_right:Nn \l__tuer_names_tl { ,~ } }
+      \tl_put_right:NV \l__tuer_names_tl \l__tuer_name_tl
+    }
+  }
+}
+\tl_new:N \l__tuer_pdftitle_tl
+\tl_new:N \l__tuer_pdfsubject_tl
+% copy #2 into #1 with "--" as an en dash (the PDF string has no ligatures)
+\cs_new_protected:Npn \__tuer_dashes:NN #1#2
+{
+  \tl_set_eq:NN #1 #2
+  \tl_replace_all:Nnn #1 { --- } { \textemdash }
+  \tl_replace_all:Nnn #1 { -- } { \textendash }
+}
+\cs_new_protected:Npn \tuer@pdfmeta
+{
+  \__tuer_pdfnames:
+  \__tuer_dashes:NN \l__tuer_pdftitle_tl \@reporttitle
+  \__tuer_dashes:NN \l__tuer_pdfsubject_tl \@reportsubject
+  \pdfstringdefDisableCommands
+  {
+    \def\\{,~}
+    \def\newline{,~}
+  }
+  \hypersetup
+  {
+    pdftitle = \l__tuer_pdftitle_tl,
+    pdfauthor = \l__tuer_names_tl,
+    pdfsubject = \l__tuer_pdfsubject_tl,
+    pdfkeywords = \@reportkeywords,
+  }
+}
+\ExplSyntaxOff
+
+\endinput

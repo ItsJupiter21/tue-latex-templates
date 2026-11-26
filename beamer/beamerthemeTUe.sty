@@ -1,0 +1,130 @@
+% beamerthemeTUe.sty -- slides in the same style as tuereport.sty (TU/e red,
+% mlmodern sans).
+% Use: \usetheme{TUe}. Footer: author | title | slide x / total (listeners need the slide number to ask questions). Backup slides after
+% \appendix do not count in the total.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeTUe}[2026/11/25 v1.0 TU/e beamer theme]
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage{mlmodern}
+\RequirePackage{tikz}
+\RequirePackage{appendixnumberbeamer}
+\RequirePackage{siunitx}
+% IEEE: 250 N/m, N·m
+\sisetup{per-mode=symbol, inter-unit-product=\ensuremath{\cdot}}
+
+% Colors -----------------------------------------------------------------------
+% Tue-red (Scarlet), Tue-gray and Tue-accent (Scarlet unless set with
+% \accentcolor{HTML}{003399}; see tuecolors.sty). The title slide stays Scarlet.
+\RequirePackage{tuecolors}
+\setbeamercolor{structure}{fg=Tue-accent}
+\setbeamercolor{normal text}{fg=black, bg=white}
+\setbeamercolor{alerted text}{fg=Tue-accent}
+\setbeamercolor{frametitle}{fg=Tue-accent}  % no bg: keeps the logo visible
+\setbeamercolor{title}{fg=Tue-red}
+\setbeamercolor{subtitle}{fg=black}
+\setbeamercolor{footline}{fg=Tue-gray}
+\setbeamercolor{block title}{fg=white, bg=Tue-accent}
+\setbeamercolor{block body}{bg=Tue-accent!6}
+\setbeamercolor{block title alerted}{fg=white, bg=black!75}
+\setbeamercolor{block body alerted}{bg=black!6}
+\setbeamercolor{block title example}{fg=white, bg=Tue-gray}
+\setbeamercolor{block body example}{bg=black!4}
+\setbeamercolor{caption name}{fg=Tue-accent}
+\hypersetup{pdflang=en-US, colorlinks=true, linkcolor=Tue-accent, urlcolor=Tue-accent,
+citecolor=Tue-accent}
+% PDF subject: the subtitle (beamer fills title and author itself)
+\AddToHook{begindocument/before}{\hypersetup{pdfsubject={\insertsubtitle}}}
+
+% Fonts ------------------------------------------------------------------------
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+\setbeamerfont{title}{size=\huge}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{footline}{size=\scriptsize}
+\setbeamerfont{caption}{size=\footnotesize}
+\setbeamerfont{caption name}{series=\bfseries}
+
+% Lists: red squares like the report -------------------------------------------
+\setbeamertemplate{itemize item}{\scriptsize\raisebox{0.15ex}{$\blacksquare$}}
+\setbeamertemplate{itemize subitem}{\scriptsize\raisebox{0.15ex}{$\square$}}
+\setbeamertemplate{itemize subsubitem}{\scriptsize$\circ$}
+\setbeamertemplate{enumerate item}{\textbf{\insertenumlabel.}}
+\setbeamertemplate{enumerate subitem}{\textbf{[\alph{enumii}]}}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}[text]
+
+% Frame title: red, gray bar, TU/e logo on the right ---------------------------
+\setbeamertemplate{frametitle}{%
+  \vskip0.35cm
+  \begin{beamercolorbox}[wd=\paperwidth, leftskip=0.5cm,
+    rightskip=0.5cm]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle
+    \ifx\insertframesubtitle\@empty\else
+    \\[-0.2ex]{\usebeamerfont{framesubtitle}\normalsize\color{Tue-gray}%
+    \insertframesubtitle}\fi
+  \end{beamercolorbox}
+  \vskip-0.1cm
+  \begin{beamercolorbox}[wd=\paperwidth]{frametitle}
+    {\color{Tue-gray!40}\rule{\paperwidth}{0.4pt}}
+\end{beamercolorbox}}
+\setbeamertemplate{headline}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-0.4cm, yshift=-0.35cm]current page.north east)
+    {\includegraphics[height=0.52cm]{figures/tue/tue-logo-scarlet.pdf}};
+\end{tikzpicture}}
+
+% Footline: author | title | x / total -----------------------------------------
+\setbeamertemplate{footline}{%
+  \usebeamercolor[fg]{footline}\usebeamerfont{footline}%
+  \hypersetup{linkcolor=Tue-gray}%
+  \hbox to \paperwidth{\hskip0.5cm%
+    \rlap{\insertshortauthor}\hfill\insertshorttitle\hfill
+  \llap{\insertframenumber\,/\,\inserttotalframenumber}\hskip0.5cm}%
+\vskip0.25cm}
+
+% Title page: logo | red bar | title, campus banner bottom right ---------------
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=south east, inner sep=0pt] at (current page.south east)
+    {\includegraphics[width=0.62\paperwidth]{figures/tue/tue-banner.pdf}};
+    \node[anchor=north west, inner sep=0pt] (logo)
+    at ([xshift=0.8cm, yshift=-0.8cm]current page.north west)
+    {\includegraphics[width=2.9cm]{figures/tue/tue-logo-scarlet.pdf}};
+    \node[anchor=north west, text width=0.62\paperwidth, align=left,
+    inner sep=0pt] (title)
+    at ([xshift=1cm]logo.north east)
+    {\usebeamerfont{title}\usebeamercolor[fg]{title}\sffamily\inserttitle\par
+      \ifx\insertsubtitle\@empty\else\vspace{0.25cm}%
+      {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}%
+    \insertsubtitle\par}\fi};
+    \draw[line width=1mm, Tue-red]
+    ([xshift=0.5cm]logo.north east)
+    -- ([xshift=0.5cm]logo.north east |- title.south);
+    \node[anchor=north west, text width=0.4\paperwidth, align=left,
+    inner sep=0pt]
+    at ([yshift=-1cm]logo.south west |- title.south)
+    {\normalsize\insertauthor\par\vspace{0.15cm}
+    {\small\color{Tue-gray}\insertinstitute\par\vspace{0.1cm}\insertdate}};
+\end{tikzpicture}}
+
+% Section divider: big red section title, slide number kept --------------------
+\AtBeginSection[]{%
+  \begin{frame}[plain, noframenumbering]
+    \vfill
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[anchor=north east, inner sep=0pt]
+      at ([xshift=-0.4cm, yshift=-0.35cm]current page.north east)
+      {\includegraphics[height=0.52cm]{figures/tue/tue-logo-scarlet.pdf}};
+    \end{tikzpicture}
+    \hspace{0.5cm}
+    \begin{minipage}{0.85\paperwidth}
+      {\color{Tue-gray}\Large\insertsectionnumber\par}\vspace{0.2cm}
+      {\color{Tue-accent}\Huge\bfseries\insertsectionhead\par}
+    \end{minipage}
+    \vfill
+\end{frame}}
+
+\endinput

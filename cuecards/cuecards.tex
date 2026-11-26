@@ -1,0 +1,41 @@
+% !TeX program = latexmk
+% Speaker cue cards: one card environment per card, in speaking order. Each card
+% gets the TU/e logo on one side and its text on the other:
+%   \begin{card}[cue under the logo, optional]{heading} text \end{card}
+% Print: double-sided, flip on long edge, A4, actual size (100 %); cut each
+% sheet in half at the marks. Printer only flips on the short edge: use
+% \usepackage[flip=short]{tuecards}.
+% Too much text on a card is an error: shorten it or split it over two cards.
+% Build: make (or latexmk -pdf cuecards.tex). Style: tuecards.sty.
+\documentclass[a4paper]{article}
+\usepackage{tuecards}
+
+\reporttitle{Title of the talk}
+\reportauthors{Name Surname}              % PDF author
+% \cardlogo{figures/partner-logo.pdf}     % other logo (width: [86.44mm])
+% \cardlogo{}                             % no logo
+% \cardfontsize{12}{15}                   % smaller text (default 14/18 pt)
+% \accentcolor{HTML}{003399}              % secondary color for headings etc.; default Scarlet
+
+\begin{document}
+
+\begin{card}{Opening (slide 1)}
+  Good morning. I am Name Surname, and in the next ten minutes I will show you how our launcher reaches \SI{10}{\metre}.
+
+  Start with the problem: the requirement, and why it is hard.
+\end{card}
+
+\begin{card}[spring -- latch -- 250 N/m]{The design (slide 2)}
+  Point at the spring.
+  The spring stores the energy; the latch releases it in one go.
+
+  Key number: \SI{250}{\newton\per\metre}, compressed \SI{40}{\milli\metre}.
+\end{card}
+
+\begin{card}{Results (slides 3--4)}
+  Three runs, all within \SI{0.5}{\metre} of the prediction.
+
+  Pause. Let the graph speak.
+\end{card}
+
+\end{document}

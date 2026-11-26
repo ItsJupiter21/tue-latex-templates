@@ -1,0 +1,36 @@
+% !TeX program = latexmk
+% Short note (SSA, weekly report, lab note): title block, sections, references.
+% Same style as main.tex (tuereport.sty), without cover and contents.
+% Writing rules and conventions: WRITING.md in the LaTeX templates.
+\documentclass[a4paper, 11pt]{article}
+\usepackage{tuereport}
+\addbibresource{references.bib}
+
+\reporttitle{SSA NUMBER}
+\reportsubtitle{Name Surname}
+\reportversion{v0.1}
+\reportauthors{Name Surname}              % PDF author
+\reportsubject{}                           % PDF subject, e.g. the course
+% \accentcolor{HTML}{003399}              % secondary color for headings etc.; default Scarlet
+
+\begin{document}
+\makenotetitle
+
+\section{Goals}
+\begin{enumerate}
+  \item Do this thing.
+  \item Do that thing.
+    \begin{enumerate}
+      \item Also do this.
+    \end{enumerate}
+\end{enumerate}
+
+\section{Work}
+What was done, with numbers and units: \SI{3.3}{\volt} at \SI{12}{\milli\ampere}.
+Refer to sources with a non-breaking space~\cite{knuth1986}.
+
+\section{Conclusion and continuation}
+What the goals led to, and what comes next.
+
+\printbibliography
+\end{document}
