@@ -229,6 +229,6 @@ The images in `docs/img/` come from the template PDFs. After changing a style, r
 The code (`.sty`, `.tex`, scripts, settings) is under the [MIT License](LICENSE).
 
 The TU/e logos in `common/figures/tue/` are trademarks of Eindhoven University of Technology and
-are **not** covered by that license. They are the official files from TU/e's own LaTeX
-templates; use them only as the TU/e visual identity allows, for TU/e work. This is a student
+are **not** covered by that license. They are the official files from the TU/e logo kit;
+use them only as the TU/e visual identity allows, for TU/e work. This is a student
 project, not an official TU/e template.
